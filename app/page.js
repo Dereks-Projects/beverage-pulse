@@ -1,66 +1,89 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import connectToDatabase from '../lib/db';
+import BeverageTrend from '../models/BeverageTrend';
+import BrandTrend from '../models/BrandTrend';
+import TickerBar from '../components/TickerBar';
+import Dashboard from '../components/Dashboard';
+import NavMenu from '../components/NavMenu';
+import DataFreshness from '../components/DataFreshness';
+import Footer from '../components/Footer';
+import styles from './page.module.css';
 
-export default function Home() {
+async function getBeverageTrends() {
+  await connectToDatabase();
+
+  const trends = await BeverageTrend.find()
+    .sort({ weekOf: -1, rank: 1 })
+    .limit(20)
+    .lean();
+
+  return JSON.parse(JSON.stringify(trends));
+}
+
+async function getBrandTrends() {
+  await connectToDatabase();
+
+  const trends = await BrandTrend.find()
+    .sort({ weekOf: -1, rank: 1 })
+    .limit(20)
+    .lean();
+
+  return JSON.parse(JSON.stringify(trends));
+}
+
+export default async function Home() {
+  const beverageTrends = await getBeverageTrends();
+  const brandTrends = await getBrandTrends();
+
+  const dataDate = beverageTrends.length > 0
+    ? new Date(beverageTrends[0].weekOf).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : 'No data';
+
+  const allTrends = [...beverageTrends, ...brandTrends];
+  const redditDate = allTrends.reduce((latest, trend) => {
+    if (!trend.lastUpdated) return latest;
+    if (!latest) return trend.lastUpdated;
+    return trend.lastUpdated > latest ? trend.lastUpdated : latest;
+  }, null);
+
+  const googleDate = allTrends.reduce((latest, trend) => {
+    if (!trend.lastGoogleUpdate) return latest;
+    if (!latest) return trend.lastGoogleUpdate;
+    return trend.lastGoogleUpdate > latest ? trend.lastGoogleUpdate : latest;
+  }, null);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className={styles.main}>
+      <header className={styles.header}>
+        <div className={styles.headerContent}>
+          <div className={styles.headerLeft}>
+            <h1 className={styles.logo}>
+              Beverage<span className={styles.logoAccent}>Pulse</span>
+            </h1>
+            <span className={styles.dataDate}>
+              Week of {dataDate}
+            </span>
+            <DataFreshness redditDate={redditDate} googleDate={googleDate} />
+          </div>
+          <NavMenu redditDate={redditDate} googleDate={googleDate} />
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </header>
+
+      <TickerBar
+        beverageTrends={beverageTrends}
+        brandTrends={brandTrends}
+        count={10}
+      />
+
+      <Dashboard
+        beverageTrends={beverageTrends}
+        brandTrends={brandTrends}
+      />
+
+      <Footer />
+    </main>
   );
 }

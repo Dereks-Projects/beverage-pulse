@@ -1,0 +1,217 @@
+/* components/TrendCard.module.css */
+/* ==========================================================================
+   TrendCard: the core visual unit of the dashboard.
+   Shows rank, name, category, divergence signal, Reddit score,
+   Google interest, and trend direction.
+   Mobile-first. Designed for fast scanning on a phone screen.
+   ========================================================================== */
+
+.card {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  transition: border-color var(--transition-base),
+              box-shadow var(--transition-base);
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: var(--text-muted);
+  box-shadow: var(--shadow-card);
+}
+
+.cardOpen {
+  border-color: var(--text-muted);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* --- Rank number (left column) --- */
+.rank {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1;
+}
+
+.rankTop {
+  color: var(--text-primary);
+}
+
+/* --- Center content (name + badges + divergence) --- */
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badges {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.categoryBadge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 1px var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+  background: var(--badge-bg, var(--surface-overlay));
+  color: var(--badge-color, var(--text-secondary));
+}
+
+/* --- Divergence label on the card --- */
+.divergenceLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.divergencePositive {
+  color: var(--signal-up);
+  background: var(--signal-up-dim);
+}
+
+.divergenceWatch {
+  color: var(--signal-watch);
+  background: var(--signal-watch-dim);
+}
+
+/* --- Right column (scores stacked) --- */
+.metrics {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+/* Reddit score row */
+.redditScore {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.scoreLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.scoreValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+/* Google score row */
+.googleScore {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.googleLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: #60A5FA;
+  letter-spacing: 0.02em;
+}
+
+.googleValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: #60A5FA;
+  line-height: 1;
+}
+
+/* Change indicator */
+.change {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  padding: 1px var(--space-2);
+  border-radius: var(--radius-full);
+  line-height: 1.4;
+}
+
+.changeUp {
+  color: var(--signal-up);
+  background: var(--signal-up-dim);
+}
+
+.changeDown {
+  color: var(--signal-down);
+  background: var(--signal-down-dim);
+}
+
+.changeSame {
+  color: var(--signal-neutral);
+  background: var(--surface-overlay);
+}
+
+.changeNew {
+  color: var(--signal-new);
+  background: var(--signal-new-dim);
+}
+
+.arrow {
+  display: inline-block;
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .card {
+    grid-template-columns: 48px 1fr auto;
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .rank {
+    font-size: var(--text-2xl);
+  }
+
+  .name {
+    font-size: var(--text-lg);
+  }
+}

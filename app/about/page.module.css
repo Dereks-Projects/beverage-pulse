@@ -1,0 +1,184 @@
+/* app/about/page.module.css */
+/* ==========================================================================
+   About page: methodology and data source explanations.
+   Long-form content styled for readability. Single column,
+   comfortable line length, generous spacing.
+   ========================================================================== */
+
+.main {
+  min-height: 100vh;
+  padding-bottom: var(--space-12);
+}
+
+.content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+}
+
+/* --------------------------------------------------------------------------
+   Page title
+   -------------------------------------------------------------------------- */
+.pageTitle {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+.pageSubtitle {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-10);
+}
+
+/* --------------------------------------------------------------------------
+   Section blocks
+   -------------------------------------------------------------------------- */
+.section {
+  margin-bottom: var(--space-10);
+}
+
+.sectionTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.paragraph {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-4);
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Metric definition blocks
+   -------------------------------------------------------------------------- */
+.metricGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.metricItem {
+  padding: var(--space-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+}
+
+.metricName {
+  font-size: var(--text-base);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-1);
+}
+
+.metricFormula {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--signal-up);
+  margin-bottom: var(--space-2);
+}
+
+.metricExplanation {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   Signal color reference
+   -------------------------------------------------------------------------- */
+.signalGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.signalItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.signalDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+.signalGreen {
+  background: var(--signal-up);
+  box-shadow: 0 0 4px var(--signal-up);
+}
+
+.signalAmber {
+  background: var(--signal-watch);
+  box-shadow: 0 0 4px var(--signal-watch);
+}
+
+.signalRed {
+  background: var(--signal-down);
+  box-shadow: 0 0 4px var(--signal-down);
+}
+
+.signalBlue {
+  background: #60A5FA;
+  box-shadow: 0 0 4px #60A5FA;
+}
+
+.signalText {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.signalLabel {
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Back link
+   -------------------------------------------------------------------------- */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: var(--space-6);
+  transition: color var(--transition-fast);
+}
+
+.backLink:hover {
+  color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .content {
+    padding: var(--space-10) var(--space-6);
+  }
+
+  .pageTitle {
+    font-size: var(--text-3xl);
+  }
+}

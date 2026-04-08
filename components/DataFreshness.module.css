@@ -1,0 +1,74 @@
+/* components/DataFreshness.module.css */
+/* ==========================================================================
+   DataFreshness: small indicator showing the age of each data source.
+   Color-coded: green (fresh), yellow (aging), red (stale).
+   Sits in the header area so it's always visible.
+   ========================================================================== */
+
+.freshness {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.source {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dotFresh {
+  background: var(--signal-up);
+  box-shadow: 0 0 4px var(--signal-up);
+}
+
+.dotAging {
+  background: var(--signal-watch);
+  box-shadow: 0 0 4px var(--signal-watch);
+}
+
+.dotStale {
+  background: var(--signal-down);
+  box-shadow: 0 0 4px var(--signal-down);
+}
+
+.dotNone {
+  background: var(--text-muted);
+}
+
+.sourceLabel {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.sourceAge {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ageFresh {
+  color: var(--signal-up);
+}
+
+.ageAging {
+  color: var(--signal-watch);
+}
+
+.ageStale {
+  color: var(--signal-down);
+}
+
+.ageNone {
+  color: var(--text-muted);
+}

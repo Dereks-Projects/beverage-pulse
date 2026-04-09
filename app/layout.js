@@ -14,6 +14,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://beveragepulse.com'),
   title: {
     default: 'BeveragePulse',
     template: '%s | BeveragePulse',

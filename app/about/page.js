@@ -1,31 +1,35 @@
 // app/about/page.js
-// Methodology and data source explanation page.
+// About page: what BeveragePulse is, how the data works,
+// and who built it (Informative Media).
 // Written for beverage directors and F&B leadership.
 // No jargon, no academic language. Clear, direct, actionable.
 
 import Link from 'next/link';
+import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import styles from './page.module.css';
 
 export const metadata = {
-  title: 'About the Data | BeveragePulse',
-  description: 'How BeveragePulse collects, scores, and ranks beverage trend data.',
+  title: 'About | BeveragePulse',
+  description: 'What BeveragePulse is, how it works, and who built it.',
 };
 
 export default function AboutPage() {
   return (
     <main className={styles.main}>
-      <div className={styles.content}>
-        <Link href="/" className={styles.backLink}>
-          ← Back to Dashboard
-        </Link>
+      <Header />
 
-        <h1 className={styles.pageTitle}>About the Data</h1>
+      <div className={styles.content}>
+        <Link href="/" className={styles.backLink}>← Back to Dashboard</Link>
+
+        <h1 className={styles.pageTitle}>About</h1>
         <p className={styles.pageSubtitle}>
-          BeveragePulse tracks what people are saying and searching about
-          beverages and brands. Two independent data sources, updated weekly,
-          designed to give beverage professionals a clear view of what is
-          gaining traction and what is fading.
+          BeveragePulse is a beverage intelligence platform built for
+          professionals who make purchasing, menu, and strategy decisions.
+          It tracks what people are saying and searching about beverages
+          and brands using two independent data sources, updated weekly,
+          and presents the results in a visual dashboard designed to answer
+          one question: which way is the wind blowing?
         </p>
 
         {/* ---- Data Sources ---- */}
@@ -309,6 +313,26 @@ export default function AboutPage() {
             transactions. It is designed to be a leading indicator, showing
             where consumer and industry attention is shifting before those
             shifts appear in sales reports.
+          </p>
+        </div>
+
+        {/* ---- Informative Media ---- */}
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Built by Informative Media</h2>
+
+          <p className={styles.paragraph}>
+            BeveragePulse is a product of Informative Media, a company
+            focused on building intelligence tools at the intersection of
+            behavioral science and data. We believe the best business
+            decisions start with understanding what people are actually
+            doing, not what surveys say they will do.
+          </p>
+
+          <p className={styles.paragraph}>
+            To learn more about Informative Media and our other projects,
+            visit <a href="https://informativemedia.com" target="_blank" rel="noopener noreferrer" className={styles.inlineLink}>informativemedia.com</a>.
+            For questions, partnership inquiries, or feedback,
+            reach us at <a href="mailto:derek@informativemedia.com" className={styles.inlineLink}>derek@informativemedia.com</a>.
           </p>
         </div>
       </div>

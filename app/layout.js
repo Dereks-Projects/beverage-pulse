@@ -14,8 +14,35 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata = {
-  title: 'BeveragePulse',
-  description: 'Beverage intelligence for F&B professionals',
+  title: {
+    default: 'BeveragePulse',
+    template: '%s | BeveragePulse',
+  },
+  description: 'Beverage intelligence at the crossroads of behavioral and data science. Track what consumers are saying and searching about beverages and brands.',
+  keywords: ['beverage trends', 'beverage intelligence', 'F&B', 'drink trends', 'beverage data', 'bar trends', 'cocktail trends'],
+  authors: [{ name: 'Informative Media', url: 'https://informativemedia.com' }],
+  creator: 'Informative Media',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'BeveragePulse',
+    title: 'BeveragePulse',
+    description: 'Beverage intelligence at the crossroads of behavioral and data science. Track what consumers are saying and searching about beverages and brands.',
+    images: [
+      {
+        url: '/socialcard.png',
+        width: 1200,
+        height: 630,
+        alt: 'BeveragePulse - Beverage Intelligence Dashboard',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BeveragePulse',
+    description: 'Beverage intelligence at the crossroads of behavioral and data science.',
+    images: ['/socialcard.png'],
+  },
 };
 
 export default function RootLayout({ children }) {

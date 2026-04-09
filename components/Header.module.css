@@ -1,0 +1,50 @@
+/* components/Header.module.css */
+/* ==========================================================================
+   Shared sticky header: logo, data date, freshness dots, hamburger menu.
+   Used on every page.
+   z-index 10000 keeps header above the NavMenu overlay (9998) and
+   panel (9999) so the hamburger X button stays visible and clickable.
+   ========================================================================== */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+  background: var(--surface-base);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-3) var(--space-4);
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.logoAccent {
+  color: var(--signal-up);
+}
+
+.dataDate {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  line-height: 1.2;
+}

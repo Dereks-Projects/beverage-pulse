@@ -1,8 +1,7 @@
-/* app/about/page.module.css */
+/* app/legal.module.css */
 /* ==========================================================================
-   About page: methodology and data source explanations.
-   Long-form content styled for readability. Single column,
-   comfortable line length, generous spacing.
+   Shared styles for legal pages: Privacy, Cookies, Terms, Content Policy.
+   Single column, readable line length, consistent with About page design.
    ========================================================================== */
 
 .main {
@@ -17,7 +16,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Page title
+   Page title and subtitle
    -------------------------------------------------------------------------- */
 .pageTitle {
   font-size: var(--text-2xl);
@@ -27,18 +26,18 @@
   margin-bottom: var(--space-2);
 }
 
-.pageSubtitle {
-  font-size: var(--text-base);
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--space-10);
+.lastUpdated {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  margin-bottom: var(--space-8);
 }
 
 /* --------------------------------------------------------------------------
    Section blocks
    -------------------------------------------------------------------------- */
 .section {
-  margin-bottom: var(--space-10);
+  margin-bottom: var(--space-8);
 }
 
 .sectionTitle {
@@ -62,97 +61,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Metric definition blocks
-   -------------------------------------------------------------------------- */
-.metricGrid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.metricItem {
-  padding: var(--space-4);
-  background: var(--surface-raised);
-  border: 1px solid var(--surface-border);
-  border-radius: var(--radius-md);
-}
-
-.metricName {
-  font-size: var(--text-base);
-  font-weight: var(--weight-bold);
-  color: var(--text-primary);
-  margin-bottom: var(--space-1);
-}
-
-.metricFormula {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--signal-up);
-  margin-bottom: var(--space-2);
-}
-
-.metricExplanation {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-/* --------------------------------------------------------------------------
-   Signal color reference
-   -------------------------------------------------------------------------- */
-.signalGrid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.signalItem {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
-}
-
-.signalDot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  margin-top: 6px;
-}
-
-.signalGreen {
-  background: var(--signal-up);
-  box-shadow: 0 0 4px var(--signal-up);
-}
-
-.signalAmber {
-  background: var(--signal-watch);
-  box-shadow: 0 0 4px var(--signal-watch);
-}
-
-.signalRed {
-  background: var(--signal-down);
-  box-shadow: 0 0 4px var(--signal-down);
-}
-
-.signalBlue {
-  background: #60A5FA;
-  box-shadow: 0 0 4px #60A5FA;
-}
-
-.signalText {
-  font-size: var(--text-sm);
-  color: var(--text-secondary);
-  line-height: 1.5;
-}
-
-.signalLabel {
-  font-weight: var(--weight-semibold);
-  color: var(--text-primary);
-}
-
-/* --------------------------------------------------------------------------
-   Inline links (Informative Media section)
+   Inline links
    -------------------------------------------------------------------------- */
 .inlineLink {
   color: var(--signal-up);

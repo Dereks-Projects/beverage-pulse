@@ -1,18 +1,12 @@
 // components/TrendCard.jsx
 // The core visual unit of the BeveragePulse dashboard.
-// Shows rank, name, category, divergence signal, Reddit score,
-// Google interest, and trend direction.
-//
-// Reddit and Google scores are displayed side by side as separate
-// labeled numbers. No composite blending. Two honest numbers.
-//
-// Divergence label appears only when the two sources meaningfully
-// disagree, highlighting opportunities or watch items.
+// Card surface shows: rank, name, category, Pulse score, trend arrow.
+// The Pulse score is the hero number. Everything else is under the hood.
 //
 // Props:
-//   trend    - MongoDB document with displayRank added by Dashboard
+//   trend    - MongoDB document with displayRank and pulseScore added by Dashboard
 //   type     - 'beverage' or 'brand' (determines taxonomy lookup)
-//   maxScore - highest Reddit score in the current view (for divergence calc)
+//   maxScore - highest Reddit score in the current view (passed to TrendDetail)
 
 'use client';
 
@@ -83,36 +77,17 @@ function formatChange(change, previousRank, currentRank) {
   }
 }
 
-/**
- * Calculate divergence between Reddit and Google signals.
- * Returns null if not enough data or signals roughly agree.
- */
-function getDivergence(score, googleInterest, maxScore) {
-  if (googleInterest === null || googleInterest === undefined) return null;
-  if (!maxScore || maxScore === 0) return null;
-
-  const redditNormalized = Math.round((score / maxScore) * 100);
-  const gap = googleInterest - redditNormalized;
-
-  if (Math.abs(gap) < 15) return null;
-
-  if (gap > 0) {
-    return {
-      label: 'Search > Buzz',
-      className: styles.divergencePositive,
-    };
-  }
-
-  return {
-    label: 'Buzz > Search',
-    className: styles.divergenceWatch,
-  };
-}
-
 export default function TrendCard({ trend, type = 'beverage', maxScore = 0 }) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { name, rank, score, mentions, change, previousRank, displayRank, googleInterest } = trend;
+  const {
+    name,
+    rank,
+    change,
+    previousRank,
+    displayRank,
+    pulseScore,
+  } = trend;
 
   const displayedRank = displayRank || rank;
 
@@ -120,10 +95,7 @@ export default function TrendCard({ trend, type = 'beverage', maxScore = 0 }) {
   const categoryMeta = getCategoryMeta(name, type);
   const changeInfo = formatChange(change, previousRank, rank);
 
-  const displayScore = Math.round(score || 0).toLocaleString();
-  const hasGoogleData = googleInterest !== null && googleInterest !== undefined;
-
-  const divergence = getDivergence(score || 0, googleInterest, maxScore);
+  const hasPulse = pulseScore !== null && pulseScore !== undefined;
 
   const rankClass = displayedRank <= 3
     ? `${styles.rank} ${styles.rankTop}`
@@ -153,39 +125,28 @@ export default function TrendCard({ trend, type = 'beverage', maxScore = 0 }) {
           {displayedRank}
         </div>
 
-        {/* Name, category, and divergence signal */}
+        {/* Name + category badge */}
         <div className={styles.info}>
           <span className={styles.name}>{displayName}</span>
-          <div className={styles.badges}>
-            <span
-              className={styles.categoryBadge}
-              style={{
-                '--badge-bg': `${categoryMeta.color}20`,
-                '--badge-color': categoryMeta.color,
-              }}
-            >
-              {categoryMeta.label}
-            </span>
-            {divergence && (
-              <span className={`${styles.divergenceLabel} ${divergence.className}`}>
-                {divergence.label}
-              </span>
-            )}
-          </div>
+          <span
+            className={styles.categoryBadge}
+            style={{
+              '--badge-bg': `${categoryMeta.color}20`,
+              '--badge-color': categoryMeta.color,
+            }}
+          >
+            {categoryMeta.label}
+          </span>
         </div>
 
-        {/* Scores: Reddit and Google stacked, plus change */}
-        <div className={styles.metrics}>
-          <div className={styles.redditScore}>
-            <span className={styles.scoreLabel}>Reddit</span>
-            <span className={styles.scoreValue}>{displayScore}</span>
+        {/* Pulse score + trend arrow */}
+        <div className={styles.pulseBlock}>
+          <div className={styles.pulseRow}>
+            <span className={styles.pulseLabel}>Pulse</span>
+            <span className={styles.pulseValue}>
+              {hasPulse ? pulseScore : '—'}
+            </span>
           </div>
-          {hasGoogleData && (
-            <div className={styles.googleScore}>
-              <span className={styles.googleLabel}>Google</span>
-              <span className={styles.googleValue}>{googleInterest}</span>
-            </div>
-          )}
           <span className={`${styles.change} ${changeInfo.className}`}>
             {changeInfo.arrow && (
               <span className={styles.arrow}>{changeInfo.arrow}</span>

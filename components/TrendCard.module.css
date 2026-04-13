@@ -1,9 +1,8 @@
 /* components/TrendCard.module.css */
 /* ==========================================================================
    TrendCard: the core visual unit of the dashboard.
-   Shows rank, name, category, divergence signal, Reddit score,
-   Google interest, and trend direction.
-   Mobile-first. Designed for fast scanning on a phone screen.
+   Card surface: rank, name, category, Pulse score, trend arrow.
+   The Pulse score is the hero number. Clean and scannable.
    ========================================================================== */
 
 .card {
@@ -46,7 +45,7 @@
   color: var(--text-primary);
 }
 
-/* --- Center content (name + badges + divergence) --- */
+/* --- Center content (name + category) --- */
 .info {
   display: flex;
   flex-direction: column;
@@ -63,13 +62,6 @@
   text-overflow: ellipsis;
 }
 
-.badges {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-}
-
 .categoryBadge {
   display: inline-flex;
   align-items: center;
@@ -84,81 +76,38 @@
   color: var(--badge-color, var(--text-secondary));
 }
 
-/* --- Divergence label on the card --- */
-.divergenceLabel {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-semibold);
-  padding: 1px var(--space-2);
-  border-radius: var(--radius-full);
-  white-space: nowrap;
-}
-
-.divergencePositive {
-  color: var(--signal-up);
-  background: var(--signal-up-dim);
-}
-
-.divergenceWatch {
-  color: var(--signal-watch);
-  background: var(--signal-watch-dim);
-}
-
-/* --- Right column (scores stacked) --- */
-.metrics {
+/* --- Right column: Pulse score + trend arrow --- */
+.pulseBlock {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
 }
 
-/* Reddit score row */
-.redditScore {
+.pulseRow {
   display: flex;
   align-items: center;
   gap: var(--space-1);
 }
 
-.scoreLabel {
+.pulseLabel {
   font-size: var(--text-xs);
   font-weight: var(--weight-medium);
-  color: var(--text-muted);
+  color: var(--signal-up);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
 
-.scoreValue {
+.pulseValue {
   font-family: var(--font-mono);
-  font-size: var(--text-lg);
+  font-size: var(--text-2xl);
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
   color: var(--text-primary);
   line-height: 1;
 }
 
-/* Google score row */
-.googleScore {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.googleLabel {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  color: #60A5FA;
-  letter-spacing: 0.02em;
-}
-
-.googleValue {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-bold);
-  font-variant-numeric: tabular-nums;
-  color: #60A5FA;
-  line-height: 1;
-}
-
-/* Change indicator */
+/* --- Change indicator --- */
 .change {
   display: inline-flex;
   align-items: center;
@@ -213,5 +162,9 @@
 
   .name {
     font-size: var(--text-lg);
+  }
+
+  .pulseValue {
+    font-size: var(--text-3xl);
   }
 }

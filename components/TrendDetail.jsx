@@ -1,62 +1,34 @@
 // components/TrendDetail.jsx
-// Compact expandable detail panel for a TrendCard.
-// Three-column stat grid, divergence signal, subreddit bars.
-// Every number has a short one-line hint, not a paragraph.
+// Expandable detail panel for a TrendCard.
+// Layout:
+//   - Pulse score centered as hero number
+//   - Four signal quadrants: Buzz, Search, Social, PowerWeb
+//   - Each with one-line human-language explainer
+//   - Rank change
+//   - AI analysis placeholder
+//   - Subreddit breakdown bars
+//   - Link to About page
 
+import Link from 'next/link';
 import styles from './TrendDetail.module.css';
 
 /**
- * Calculate divergence between Reddit and Google.
+ * Format a velocity percentage for display.
  */
-function getDivergence(score, googleInterest, maxScore) {
-  if (googleInterest === null || googleInterest === undefined) return null;
-  if (!maxScore || maxScore === 0) return null;
-
-  const redditNormalized = Math.round((score / maxScore) * 100);
-  const gap = googleInterest - redditNormalized;
-
-  if (Math.abs(gap) < 15) return null;
-
-  if (gap > 0) {
-    return {
-      label: 'Consumer search outpacing buzz',
-      hint: 'People are searching for this more than the industry is discussing it.',
-      className: 'divergencePositive',
-      icon: '↗',
-    };
-  }
-
-  return {
-    label: 'Buzz outpacing consumer search',
-    hint: 'Industry is talking about this more than consumers are searching for it.',
-    className: 'divergenceWatch',
-    icon: '↘',
-  };
+function formatVelocity(value) {
+  if (value === null || value === undefined) return null;
+  const prefix = value > 0 ? '+' : '';
+  return `${prefix}${value}%`;
 }
 
 /**
- * Calculate Google trend direction from history.
+ * Get the CSS class for a velocity value.
  */
-function getGoogleDirection(googleHistory, currentValue) {
-  if (!googleHistory || googleHistory.length < 2 || currentValue === null) {
-    return null;
-  }
-
-  const oldest = googleHistory[0]?.value;
-  if (oldest === null || oldest === undefined) return null;
-
-  const change = currentValue - oldest;
-  const weeks = googleHistory.length;
-
-  if (Math.abs(change) < 3) {
-    return { direction: 'flat', change: 0, weeks, label: `Flat over ${weeks}wk` };
-  }
-
-  if (change > 0) {
-    return { direction: 'up', change, weeks, label: `▲ ${change}pts over ${weeks}wk` };
-  }
-
-  return { direction: 'down', change: Math.abs(change), weeks, label: `▼ ${Math.abs(change)}pts over ${weeks}wk` };
+function getVelocityClass(value) {
+  if (value === null || value === undefined) return '';
+  if (value > 5) return styles.valueUp;
+  if (value < -5) return styles.valueDown;
+  return styles.valueFlat;
 }
 
 export default function TrendDetail({ trend, isOpen, maxScore }) {
@@ -68,10 +40,15 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
     previousRank,
     subredditBreakdown,
     googleInterest,
-    googleHistory,
+    searchVelocity,
+    youtubeScore,
+    socialVelocity,
+    pulseScore,
   } = trend;
 
-  const hasGoogleData = googleInterest !== null && googleInterest !== undefined;
+  const hasSearchVelocity = searchVelocity !== null && searchVelocity !== undefined;
+  const hasSocialVelocity = socialVelocity !== null && socialVelocity !== undefined;
+  const hasPulse = pulseScore !== null && pulseScore !== undefined;
 
   // Subreddit breakdown
   const breakdownEntries = Object.entries(subredditBreakdown || {})
@@ -86,56 +63,57 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
   else if (change === 'down' && previousRank) rankChangeText = `Down from #${previousRank}`;
   else if (change === 'same') rankChangeText = 'Unchanged';
 
-  // Divergence
-  const divergence = getDivergence(score, googleInterest, maxScore);
-
-  // Google direction
-  const googleDirection = getGoogleDirection(googleHistory || [], googleInterest);
-
   return (
     <div
       className={`${styles.detail} ${isOpen ? styles.detailOpen : ''}`}
       aria-hidden={!isOpen}
     >
-      {/* Stats grid */}
-      <div className={styles.statsGrid}>
-        <div className={styles.stat}>
-          <span className={styles.statLabel}>Reddit</span>
-          <span className={styles.statValue}>
+      {/* Pulse hero score */}
+      <div className={styles.pulseHero}>
+        <span className={styles.pulseValue}>
+          {hasPulse ? pulseScore : '—'}
+        </span>
+        <span className={styles.pulseLabel}>Pulse Score</span>
+      </div>
+
+      {/* Four signal quadrants */}
+      <div className={styles.signalGrid}>
+        {/* Buzz (Reddit) */}
+        <div className={styles.signalBlock}>
+          <span className={styles.signalTitle}>Buzz</span>
+          <span className={styles.signalValue}>
             {Math.round(score || 0).toLocaleString()}
           </span>
-          <span className={styles.statHint}>Buzz weighted by upvotes</span>
+          <span className={styles.signalHint}>Industry conversation this week</span>
         </div>
 
-        <div className={styles.stat}>
-          <span className={styles.statLabel}>Google</span>
-          <span className={`${styles.statValue} ${hasGoogleData ? styles.statValueGoogle : styles.statValueMuted}`}>
-            {hasGoogleData ? googleInterest : '—'}
+        {/* Social (YouTube) */}
+        <div className={styles.signalBlock}>
+          <span className={styles.signalTitle}>Social</span>
+          <span className={`${styles.signalValue} ${hasSocialVelocity ? getVelocityClass(socialVelocity) : styles.valuePending}`}>
+            {hasSocialVelocity ? formatVelocity(socialVelocity) : '—'}
           </span>
-          <span className={styles.statHint}>
-            {hasGoogleData ? 'Search interest, 0-100' : 'Not yet collected'}
+          <span className={styles.signalHint}>
+            {hasSocialVelocity ? 'Creator attention momentum, 90 days' : 'Collecting data'}
           </span>
-          {googleDirection && (
-            <span
-              className={`${styles.googleDirection} ${
-                googleDirection.direction === 'up'
-                  ? styles.directionUp
-                  : googleDirection.direction === 'down'
-                  ? styles.directionDown
-                  : styles.directionFlat
-              }`}
-            >
-              {googleDirection.label}
-            </span>
-          )}
         </div>
 
-        <div className={styles.stat}>
-          <span className={styles.statLabel}>Mentions</span>
-          <span className={styles.statValue}>
-            {mentions.toLocaleString()}
+        {/* Search (Google) */}
+        <div className={styles.signalBlock}>
+          <span className={styles.signalTitle}>Search</span>
+          <span className={`${styles.signalValue} ${hasSearchVelocity ? getVelocityClass(searchVelocity) : styles.valuePending}`}>
+            {hasSearchVelocity ? formatVelocity(searchVelocity) : '—'}
           </span>
-          <span className={styles.statHint}>Raw count, unweighted</span>
+          <span className={styles.signalHint}>
+            {hasSearchVelocity ? 'Consumer search momentum, 90 days' : 'Collecting data'}
+          </span>
+        </div>
+
+        {/* PowerWeb (future) */}
+        <div className={styles.signalBlock}>
+          <span className={styles.signalTitle}>PowerWeb</span>
+          <span className={`${styles.signalValue} ${styles.valuePending}`}>—</span>
+          <span className={styles.signalHint}>Retailer intelligence, coming soon</span>
         </div>
       </div>
 
@@ -146,28 +124,18 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
         </span>
       </div>
 
-      {/* Divergence signal */}
-      {divergence && (
-        <div
-          className={`${styles.divergenceBlock} ${
-            divergence.className === 'divergencePositive'
-              ? styles.divergencePositive
-              : styles.divergenceWatch
-          }`}
-        >
-          <span className={styles.divergenceIcon}>{divergence.icon}</span>
-          <div className={styles.divergenceText}>
-            <span className={styles.divergenceLabel}>{divergence.label}</span>
-            {' '}
-            <span className={styles.divergenceHint}>{divergence.hint}</span>
-          </div>
-        </div>
-      )}
+      {/* AI analysis placeholder */}
+      <div className={styles.analysisBlock}>
+        <p className={styles.analysisText}>
+          AI-powered analysis will appear here. A 3-sentence synopsis of this
+          item's performance, trajectory, and what it means for your business.
+        </p>
+      </div>
 
       {/* Subreddit breakdown */}
-      {breakdownEntries.length > 0 ? (
+      {breakdownEntries.length > 0 && (
         <div className={styles.breakdownBlock}>
-          <p className={styles.breakdownTitle}>Top subreddits</p>
+          <p className={styles.breakdownTitle}>Where the buzz is</p>
           <div className={styles.breakdownList}>
             {breakdownEntries.map(([subreddit, count]) => (
               <div key={subreddit} className={styles.breakdownItem}>
@@ -183,9 +151,12 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
             ))}
           </div>
         </div>
-      ) : (
-        <p className={styles.noData}>No subreddit data available.</p>
       )}
+
+      {/* About link */}
+      <div className={styles.aboutLink}>
+        <Link href="/about" className={styles.aboutAnchor}>About the Data</Link>
+      </div>
     </div>
   );
 }

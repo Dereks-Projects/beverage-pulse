@@ -1,59 +1,33 @@
 // app/api/refresh/route.js
-// POST endpoint to manually trigger a full data refresh.
-// Runs three data sources in sequence:
-//   1. Reddit scrape (primary - buzz signal)
-//   2. Google Trends (secondary - search signal)
-//   3. YouTube (tertiary - culture signal)
-// Each source is independent. If one fails, the others still save.
-// Returns a summary of all three operations.
+// POST endpoint to manually trigger a Reddit data refresh.
+// Reddit is the primary data source and the scout: it identifies
+// which terms are generating real conversation. The top terms
+// from Reddit become the active tracking list for Google and YouTube.
+//
+// Google Search Velocity and YouTube Social Velocity are handled
+// by automated daily cron jobs (see /api/cron/google-trends and
+// /api/cron/youtube). They run in staggered batches of 10 terms
+// per day to stay within API quotas.
+//
+// Pipeline:
+//   1. Reddit scrape (this route, manual trigger)
+//   2. Google Search Velocity (daily cron, 10 terms/day)
+//   3. YouTube Social Velocity (daily cron, 10 terms/day)
 
 import { updateAllTrends } from '../../../lib/redditService.js';
-import { updateGoogleTrends } from '../../../lib/googleTrends.js';
-import { updateYoutubeTrends } from '../../../lib/youtubeService.js';
 
 export async function POST() {
   try {
-    console.log('Manual refresh triggered...');
+    console.log('Manual refresh triggered: Reddit scrape...');
 
-    // Step 1: Reddit scrape (primary)
     const redditResult = await updateAllTrends();
 
-    // Step 2: Google Trends (secondary, non-blocking)
-    let googleResult = null;
-    try {
-      googleResult = await updateGoogleTrends();
-    } catch (googleError) {
-      console.error('Google Trends update failed:', googleError.message);
-      googleResult = {
-        successes: 0,
-        failures: -1,
-        failedTerms: [],
-        error: googleError.message,
-      };
-    }
-
-    // Step 3: YouTube (tertiary, non-blocking)
-    let youtubeResult = null;
-    try {
-      youtubeResult = await updateYoutubeTrends();
-    } catch (youtubeError) {
-      console.error('YouTube update failed:', youtubeError.message);
-      youtubeResult = {
-        successes: 0,
-        failures: -1,
-        failedTerms: [],
-        error: youtubeError.message,
-      };
-    }
-
     return Response.json({
-      message: 'Refresh completed',
+      message: 'Reddit refresh completed. Google and YouTube velocity data updates via daily cron.',
       reddit: {
         beverages: redditResult.beverages.length,
         brands: redditResult.brands.length,
       },
-      google: googleResult,
-      youtube: youtubeResult,
     });
   } catch (error) {
     console.error('Error during refresh:', error);

@@ -1,8 +1,8 @@
 // models/BeverageTrend.js
 // MongoDB schema for beverage trend data.
-// Stores Reddit engagement, Google Trends search velocity,
-// YouTube culture signal, and rolling history arrays for
-// trend direction tracking.
+// Stores Reddit engagement, Google Search Velocity,
+// YouTube Social Velocity, and rolling history arrays
+// for trend direction tracking.
 
 import mongoose from 'mongoose';
 
@@ -49,7 +49,7 @@ const beverageTrendSchema = new mongoose.Schema({
   },
 
   // --- Google Trends fields ---
-  // Current snapshot value (most recent week, 0-100 relative scale)
+  // Current snapshot value (most recent data point, 0-100 relative scale)
   googleInterest: {
     type: Number,
     default: null,
@@ -57,7 +57,6 @@ const beverageTrendSchema = new mongoose.Schema({
   // Search Velocity: percentage change in search interest.
   // Compares last 30 days to prior 60 days.
   // Positive = accelerating, negative = decelerating.
-  // Example: +37 means searches are up 37% vs. baseline.
   searchVelocity: {
     type: Number,
     default: null,
@@ -66,8 +65,6 @@ const beverageTrendSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
-  // Rolling history of weekly Google interest values from 90-day fetch.
-  // Populated directly from the API response, not built manually.
   googleHistory: {
     type: [
       {
@@ -79,7 +76,15 @@ const beverageTrendSchema = new mongoose.Schema({
   },
 
   // --- YouTube fields ---
+  // Normalized view count for current period (0-100, context metric)
   youtubeScore: {
+    type: Number,
+    default: null,
+  },
+  // Social Velocity: percentage change in creator output and attention.
+  // Compares last 30 days to prior 60 days.
+  // Positive = cultural traction accelerating, negative = cooling.
+  socialVelocity: {
     type: Number,
     default: null,
   },

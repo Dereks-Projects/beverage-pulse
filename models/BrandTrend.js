@@ -1,8 +1,8 @@
 // models/BrandTrend.js
 // MongoDB schema for brand trend data.
-// Stores Reddit engagement, Google Trends search velocity,
-// YouTube culture signal, and rolling history arrays for
-// trend direction tracking.
+// Stores Reddit engagement, Google Search Velocity,
+// YouTube Social Velocity, and rolling history arrays
+// for trend direction tracking.
 
 import mongoose from 'mongoose';
 
@@ -73,6 +73,10 @@ const brandTrendSchema = new mongoose.Schema({
 
   // --- YouTube fields ---
   youtubeScore: {
+    type: Number,
+    default: null,
+  },
+  socialVelocity: {
     type: Number,
     default: null,
   },

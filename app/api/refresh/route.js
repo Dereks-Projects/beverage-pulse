@@ -1,11 +1,15 @@
 // app/api/refresh/route.js
 // POST endpoint to manually trigger a full data refresh.
-// Runs Reddit scrape first (primary data source), then
-// Google Trends (secondary). If Google fails, Reddit data
-// is still saved. Returns a summary of both operations.
+// Runs three data sources in sequence:
+//   1. Reddit scrape (primary - buzz signal)
+//   2. Google Trends (secondary - search signal)
+//   3. YouTube (tertiary - culture signal)
+// Each source is independent. If one fails, the others still save.
+// Returns a summary of all three operations.
 
 import { updateAllTrends } from '../../../lib/redditService.js';
 import { updateGoogleTrends } from '../../../lib/googleTrends.js';
+import { updateYoutubeTrends } from '../../../lib/youtubeService.js';
 
 export async function POST() {
   try {
@@ -28,6 +32,20 @@ export async function POST() {
       };
     }
 
+    // Step 3: YouTube (tertiary, non-blocking)
+    let youtubeResult = null;
+    try {
+      youtubeResult = await updateYoutubeTrends();
+    } catch (youtubeError) {
+      console.error('YouTube update failed:', youtubeError.message);
+      youtubeResult = {
+        successes: 0,
+        failures: -1,
+        failedTerms: [],
+        error: youtubeError.message,
+      };
+    }
+
     return Response.json({
       message: 'Refresh completed',
       reddit: {
@@ -35,6 +53,7 @@ export async function POST() {
         brands: redditResult.brands.length,
       },
       google: googleResult,
+      youtube: youtubeResult,
     });
   } catch (error) {
     console.error('Error during refresh:', error);

@@ -1,11 +1,18 @@
 // components/Dashboard.jsx
-// Client component that manages view toggle, category filter,
-// and sort state. Calculates Pulse score for each trend and
-// passes it to TrendCard.
+// ==========================================================================
+// Main dashboard component. Two intelligence products side by side:
 //
-// Props:
-//   beverageTrends - array of beverage trend objects from MongoDB
-//   brandTrends    - array of brand trend objects from MongoDB
+// LEFT COLUMN: Product Pulse (brands)
+//   "Which specific products should I act on right now?"
+//   Scored by: Buzz + Search + Social + PowerWeb (equal weight)
+//
+// RIGHT COLUMN: Market Pulse (beverage subcategories)
+//   "Which categories are the market moving toward?"
+//   Scored by: PowerWeb (67%) + Search (17%) + Social (16%)
+//   Until PowerWeb is built: Search + Social velocity only
+//
+// Default view: All (full landscape). User narrows from there.
+// ==========================================================================
 
 'use client';
 
@@ -14,7 +21,7 @@ import TrendCard from './TrendCard';
 import FilterBar from './FilterBar';
 import ViewToggle from './ViewToggle';
 import SortToggle from './SortToggle';
-import { calculatePulse } from '../lib/pulseScore';
+import { calculateProductPulse, calculateMarketPulse } from '../lib/pulseScore';
 import {
   CATEGORIES,
   BEVERAGE_TAXONOMY,
@@ -44,7 +51,7 @@ function getParentGroup(name, type) {
 
 /**
  * Find the highest Reddit score in an array of trends.
- * Used for Buzz normalization in Pulse calculation.
+ * Used for Buzz normalization in Product Pulse.
  */
 function getMaxScore(trends) {
   if (trends.length === 0) return 0;
@@ -52,12 +59,22 @@ function getMaxScore(trends) {
 }
 
 /**
- * Add Pulse score to each trend in an array.
+ * Add Product Pulse scores to brand trends.
  */
-function addPulseScores(trends, maxScore) {
+function addProductPulseScores(trends, maxScore) {
   return trends.map((trend) => ({
     ...trend,
-    pulseScore: calculatePulse(trend, maxScore),
+    pulseScore: calculateProductPulse(trend, maxScore),
+  }));
+}
+
+/**
+ * Add Market Pulse scores to beverage trends.
+ */
+function addMarketPulseScores(trends) {
+  return trends.map((trend) => ({
+    ...trend,
+    pulseScore: calculateMarketPulse(trend),
   }));
 }
 
@@ -84,7 +101,7 @@ function filterTrends(trends, view, category, type) {
 
 /**
  * Sort a trends array by the selected key.
- * Default sort (score) now uses Pulse score.
+ * Default sort uses Pulse score.
  */
 function sortTrends(trends, sortKey) {
   const sorted = [...trends];
@@ -112,7 +129,7 @@ function applyDisplayRanks(trends) {
 }
 
 export default function Dashboard({ beverageTrends, brandTrends }) {
-  const [activeView, setActiveView] = useState('alcoholic');
+  const [activeView, setActiveView] = useState('all');
   const [activeFilter, setActiveFilter] = useState('all');
   const [activeSort, setActiveSort] = useState('score');
 
@@ -132,38 +149,33 @@ export default function Dashboard({ beverageTrends, brandTrends }) {
   }, [activeView]);
 
   // Calculate max scores for Buzz normalization (unfiltered)
-  const maxBeverageScore = useMemo(
-    () => getMaxScore(beverageTrends),
-    [beverageTrends]
-  );
-
   const maxBrandScore = useMemo(
     () => getMaxScore(brandTrends),
     [brandTrends]
   );
 
-  // Add Pulse scores before filtering/sorting
-  const beveragesWithPulse = useMemo(
-    () => addPulseScores(beverageTrends, maxBeverageScore),
-    [beverageTrends, maxBeverageScore]
-  );
-
+  // Add Pulse scores using the correct formula for each list
   const brandsWithPulse = useMemo(
-    () => addPulseScores(brandTrends, maxBrandScore),
+    () => addProductPulseScores(brandTrends, maxBrandScore),
     [brandTrends, maxBrandScore]
   );
 
-  // Filter, sort by Pulse, then recalculate display ranks
-  const filteredBeverages = applyDisplayRanks(
+  const beveragesWithPulse = useMemo(
+    () => addMarketPulseScores(beverageTrends),
+    [beverageTrends]
+  );
+
+  // Filter, sort, rank
+  const filteredBrands = applyDisplayRanks(
     sortTrends(
-      filterTrends(beveragesWithPulse, activeView, activeFilter, 'beverage'),
+      filterTrends(brandsWithPulse, activeView, activeFilter, 'brand'),
       activeSort
     )
   );
 
-  const filteredBrands = applyDisplayRanks(
+  const filteredBeverages = applyDisplayRanks(
     sortTrends(
-      filterTrends(brandsWithPulse, activeView, activeFilter, 'brand'),
+      filterTrends(beveragesWithPulse, activeView, activeFilter, 'beverage'),
       activeSort
     )
   );
@@ -192,37 +204,12 @@ export default function Dashboard({ beverageTrends, brandTrends }) {
         />
       </div>
 
-      {/* Two-column trend grid */}
+      {/* Two-column intelligence grid */}
       <div className={styles.columns}>
-        {/* Beverage trends */}
+        {/* LEFT: Product Pulse (brands) */}
         <section className={styles.column}>
           <div className={styles.columnHeader}>
-            <h2 className={styles.columnTitle}>Beverages</h2>
-            <span className={styles.columnCount}>
-              {filteredBeverages.length} result{filteredBeverages.length !== 1 ? 's' : ''}
-            </span>
-          </div>
-          <div className={styles.cardList} role="list">
-            {filteredBeverages.map((trend) => (
-              <TrendCard
-                key={trend._id}
-                trend={trend}
-                type="beverage"
-                maxScore={maxBeverageScore}
-              />
-            ))}
-            {filteredBeverages.length === 0 && (
-              <p className={styles.empty}>
-                No beverages in this category.
-              </p>
-            )}
-          </div>
-        </section>
-
-        {/* Brand trends */}
-        <section className={styles.column}>
-          <div className={styles.columnHeader}>
-            <h2 className={styles.columnTitle}>Brands</h2>
+            <h2 className={styles.columnTitle}>Product Pulse</h2>
             <span className={styles.columnCount}>
               {filteredBrands.length} result{filteredBrands.length !== 1 ? 's' : ''}
             </span>
@@ -238,7 +225,32 @@ export default function Dashboard({ beverageTrends, brandTrends }) {
             ))}
             {filteredBrands.length === 0 && (
               <p className={styles.empty}>
-                No brands in this category.
+                No products in this category.
+              </p>
+            )}
+          </div>
+        </section>
+
+        {/* RIGHT: Market Pulse (beverage subcategories) */}
+        <section className={styles.column}>
+          <div className={styles.columnHeader}>
+            <h2 className={styles.columnTitle}>Market Pulse</h2>
+            <span className={styles.columnCount}>
+              {filteredBeverages.length} result{filteredBeverages.length !== 1 ? 's' : ''}
+            </span>
+          </div>
+          <div className={styles.cardList} role="list">
+            {filteredBeverages.map((trend) => (
+              <TrendCard
+                key={trend._id}
+                trend={trend}
+                type="beverage"
+                maxScore={getMaxScore(beverageTrends)}
+              />
+            ))}
+            {filteredBeverages.length === 0 && (
+              <p className={styles.empty}>
+                No categories in this view.
               </p>
             )}
           </div>

@@ -1,8 +1,8 @@
 // models/BrandTrend.js
 // MongoDB schema for brand trend data.
 // Stores Reddit engagement, Google Search Velocity,
-// YouTube Social Velocity, and rolling history arrays
-// for trend direction tracking.
+// YouTube Social Velocity, PowerWeb retailer intelligence,
+// and rolling history arrays for trend direction tracking.
 
 import mongoose from 'mongoose';
 
@@ -92,6 +92,21 @@ const brandTrendSchema = new mongoose.Schema({
       },
     ],
     default: [],
+  },
+
+  // --- PowerWeb fields ---
+  powerWebScore: {
+    type: Number,
+    default: null,
+  },
+  lastPowerWebUpdate: {
+    type: Date,
+    default: null,
+  },
+  powerWebBreakdown: {
+    type: Map,
+    of: Number,
+    default: {},
   },
 });
 

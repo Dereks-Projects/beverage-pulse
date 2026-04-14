@@ -1,8 +1,8 @@
 // models/BeverageTrend.js
 // MongoDB schema for beverage trend data.
 // Stores Reddit engagement, Google Search Velocity,
-// YouTube Social Velocity, and rolling history arrays
-// for trend direction tracking.
+// YouTube Social Velocity, PowerWeb retailer intelligence,
+// and rolling history arrays for trend direction tracking.
 
 import mongoose from 'mongoose';
 
@@ -49,14 +49,10 @@ const beverageTrendSchema = new mongoose.Schema({
   },
 
   // --- Google Trends fields ---
-  // Current snapshot value (most recent data point, 0-100 relative scale)
   googleInterest: {
     type: Number,
     default: null,
   },
-  // Search Velocity: percentage change in search interest.
-  // Compares last 30 days to prior 60 days.
-  // Positive = accelerating, negative = decelerating.
   searchVelocity: {
     type: Number,
     default: null,
@@ -76,14 +72,10 @@ const beverageTrendSchema = new mongoose.Schema({
   },
 
   // --- YouTube fields ---
-  // Normalized view count for current period (0-100, context metric)
   youtubeScore: {
     type: Number,
     default: null,
   },
-  // Social Velocity: percentage change in creator output and attention.
-  // Compares last 30 days to prior 60 days.
-  // Positive = cultural traction accelerating, negative = cooling.
   socialVelocity: {
     type: Number,
     default: null,
@@ -100,6 +92,25 @@ const beverageTrendSchema = new mongoose.Schema({
       },
     ],
     default: [],
+  },
+
+  // --- PowerWeb fields ---
+  // Retailer homepage intelligence score (0-100).
+  // Measures how prominently this term appears across
+  // major beverage retailer websites.
+  powerWebScore: {
+    type: Number,
+    default: null,
+  },
+  lastPowerWebUpdate: {
+    type: Date,
+    default: null,
+  },
+  // Per-retailer breakdown: { "totalwine": 85, "bevmo": 72 }
+  powerWebBreakdown: {
+    type: Map,
+    of: Number,
+    default: {},
   },
 });
 

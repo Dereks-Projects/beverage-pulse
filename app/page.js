@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import connectToDatabase from '../lib/db';
 import BeverageTrend from '../models/BeverageTrend';
 import BrandTrend from '../models/BrandTrend';

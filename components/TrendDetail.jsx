@@ -1,7 +1,7 @@
 // components/TrendDetail.jsx
 // Expandable detail panel for a TrendCard.
 // Layout:
-//   - Pulse score centered as hero number
+//   - Brand Signal score centered as hero number
 //   - Four signal quadrants: Buzz, Search, Social, PowerWeb
 //   - Each with one-line human-language explainer
 //   - Rank change
@@ -80,12 +80,12 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
       className={`${styles.detail} ${isOpen ? styles.detailOpen : ''}`}
       aria-hidden={!isOpen}
     >
-      {/* Pulse hero score */}
+      {/* Brand Signal hero score */}
       <div className={styles.pulseHero}>
         <span className={styles.pulseValue}>
           {hasPulse ? pulseScore : '—'}
         </span>
-        <span className={styles.pulseLabel}>Pulse Score</span>
+        <span className={styles.pulseLabel}>Brand Signal</span>
       </div>
 
       {/* Four signal quadrants */}

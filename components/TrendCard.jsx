@@ -1,12 +1,7 @@
 // components/TrendCard.jsx
 // The core visual unit of the BeveragePulse dashboard.
-// Card surface shows: rank, name, category, Pulse score, trend arrow.
-// The Pulse score is the hero number. Everything else is under the hood.
-//
-// Props:
-//   trend    - MongoDB document with displayRank and pulseScore added by Dashboard
-//   type     - 'beverage' or 'brand' (determines taxonomy lookup)
-//   maxScore - highest Reddit score in the current view (passed to TrendDetail)
+// Card surface shows: rank, name, category, Brand Signal score, trend arrow.
+// The Brand Signal is the hero number. Everything else is under the hood.
 
 'use client';
 
@@ -139,10 +134,10 @@ export default function TrendCard({ trend, type = 'beverage', maxScore = 0 }) {
           </span>
         </div>
 
-        {/* Pulse score + trend arrow */}
+        {/* Brand Signal score + trend arrow */}
         <div className={styles.pulseBlock}>
           <div className={styles.pulseRow}>
-            <span className={styles.pulseLabel}>Pulse</span>
+            <span className={styles.pulseLabel}>Signal</span>
             <span className={styles.pulseValue}>
               {hasPulse ? pulseScore : '—'}
             </span>

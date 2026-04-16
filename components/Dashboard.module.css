@@ -1,8 +1,7 @@
 /* components/Dashboard.module.css */
 /* ==========================================================================
-   Dashboard: client-side wrapper that holds filter state and renders
-   the filtered trend cards. Replaces the grid layout that was
-   previously in page.module.css.
+   Dashboard: single column Trending Brands layout.
+   Full width cards. Filters and sort above.
    ========================================================================== */
 
 .dashboard {
@@ -12,7 +11,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Filter section: sits above the two columns
+   Filter section
    -------------------------------------------------------------------------- */
 .filterSection {
   margin-bottom: var(--space-6);
@@ -28,7 +27,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   Top controls row: view toggle and sort side by side
+   Top controls row: view toggle and sort
    -------------------------------------------------------------------------- */
 .controlsRow {
   display: flex;
@@ -40,31 +39,10 @@
 }
 
 /* --------------------------------------------------------------------------
-   Two-column grid
+   Single column layout (Trending Brands)
    -------------------------------------------------------------------------- */
-.columns {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-8);
-}
-
-@media (min-width: 768px) {
-  .dashboard {
-    padding: var(--space-6) var(--space-6);
-  }
-
-  .columns {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-/* --------------------------------------------------------------------------
-   Individual column
-   -------------------------------------------------------------------------- */
-.column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+.singleColumn {
+  max-width: 720px;
 }
 
 .columnHeader {
@@ -72,6 +50,7 @@
   align-items: baseline;
   justify-content: space-between;
   padding: 0 var(--space-1);
+  margin-bottom: var(--space-4);
 }
 
 .columnTitle {
@@ -101,4 +80,13 @@
   color: var(--text-muted);
   padding: var(--space-10) 0;
   font-size: var(--text-sm);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .dashboard {
+    padding: var(--space-6) var(--space-6);
+  }
 }

@@ -31,6 +31,16 @@ function getVelocityClass(value) {
   return styles.valueFlat;
 }
 
+/**
+ * Get the CSS class for a PowerWeb score.
+ */
+function getPowerWebClass(value) {
+  if (value === null || value === undefined) return '';
+  if (value >= 60) return styles.valueUp;
+  if (value <= 25) return styles.valueDown;
+  return styles.valueFlat;
+}
+
 export default function TrendDetail({ trend, isOpen, maxScore }) {
   const {
     score,
@@ -43,11 +53,13 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
     searchVelocity,
     youtubeScore,
     socialVelocity,
+    powerWebScore,
     pulseScore,
   } = trend;
 
   const hasSearchVelocity = searchVelocity !== null && searchVelocity !== undefined;
   const hasSocialVelocity = socialVelocity !== null && socialVelocity !== undefined;
+  const hasPowerWeb = powerWebScore !== null && powerWebScore !== undefined;
   const hasPulse = pulseScore !== null && pulseScore !== undefined;
 
   // Subreddit breakdown
@@ -109,11 +121,15 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
           </span>
         </div>
 
-        {/* PowerWeb (future) */}
+        {/* PowerWeb */}
         <div className={styles.signalBlock}>
           <span className={styles.signalTitle}>PowerWeb</span>
-          <span className={`${styles.signalValue} ${styles.valuePending}`}>—</span>
-          <span className={styles.signalHint}>Retailer intelligence, coming soon</span>
+          <span className={`${styles.signalValue} ${hasPowerWeb ? getPowerWebClass(powerWebScore) : styles.valuePending}`}>
+            {hasPowerWeb ? powerWebScore : '—'}
+          </span>
+          <span className={styles.signalHint}>
+            {hasPowerWeb ? 'Retailer and editorial positioning' : 'Collecting data'}
+          </span>
         </div>
       </div>
 

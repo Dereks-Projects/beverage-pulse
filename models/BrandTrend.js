@@ -3,6 +3,17 @@
 // Stores Reddit engagement, Google Search Velocity,
 // YouTube Social Velocity, PowerWeb retailer intelligence,
 // and rolling history arrays for trend direction tracking.
+//
+// HISTORY ARRAYS (one per signal):
+//   scoreHistory      - Reddit upvote-weighted score over time
+//   googleHistory     - Google Search Velocity over time
+//   youtubeHistory    - YouTube Social Velocity over time
+//   powerWebHistory   - PowerWeb retail positioning score over time
+//
+//   Each entry is { value, weekOf }. Arrays are trimmed to the
+//   most recent 8 entries by their respective services. The AI
+//   analysis layer reads these arrays to detect acceleration,
+//   deceleration, and breakout patterns.
 
 import mongoose from 'mongoose';
 
@@ -46,6 +57,15 @@ const brandTrendSchema = new mongoose.Schema({
     type: Map,
     of: Number,
     default: {},
+  },
+  scoreHistory: {
+    type: [
+      {
+        value: { type: Number, required: true },
+        weekOf: { type: Date, required: true },
+      },
+    ],
+    default: [],
   },
 
   // --- Google Trends fields ---
@@ -107,6 +127,15 @@ const brandTrendSchema = new mongoose.Schema({
     type: Map,
     of: Number,
     default: {},
+  },
+  powerWebHistory: {
+    type: [
+      {
+        value: { type: Number, required: true },
+        weekOf: { type: Date, required: true },
+      },
+    ],
+    default: [],
   },
 });
 

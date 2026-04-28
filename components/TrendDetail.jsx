@@ -2,12 +2,19 @@
 // Expandable detail panel for a TrendCard.
 // Layout:
 //   - Brand Signal score centered as hero number
-//   - Four signal quadrants: Buzz, Search, Social, PowerWeb
+//   - Four signal quadrants: Buzz, News, Social, PowerWeb
 //   - Each with one-line human-language explainer
 //   - Rank change
 //   - AI analysis placeholder
 //   - Subreddit breakdown bars
 //   - Link to About page
+//
+// SIGNAL CHANGE (2026-04-28):
+//   The Search slot has been replaced with News. The Google Trends
+//   API was unreliable from Vercel's hosting; Google News RSS is
+//   a reliable, free, public alternative. The signal now reads
+//   newsVelocity from the brand record. See lib/googleTrends.js
+//   for the data layer.
 
 import Link from 'next/link';
 import styles from './TrendDetail.module.css';
@@ -49,15 +56,14 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
     change,
     previousRank,
     subredditBreakdown,
-    googleInterest,
-    searchVelocity,
+    newsVelocity,
     youtubeScore,
     socialVelocity,
     powerWebScore,
     pulseScore,
   } = trend;
 
-  const hasSearchVelocity = searchVelocity !== null && searchVelocity !== undefined;
+  const hasNewsVelocity = newsVelocity !== null && newsVelocity !== undefined;
   const hasSocialVelocity = socialVelocity !== null && socialVelocity !== undefined;
   const hasPowerWeb = powerWebScore !== null && powerWebScore !== undefined;
   const hasPulse = pulseScore !== null && pulseScore !== undefined;
@@ -110,14 +116,14 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
           </span>
         </div>
 
-        {/* Search (Google) */}
+        {/* News (Google News) */}
         <div className={styles.signalBlock}>
-          <span className={styles.signalTitle}>Search</span>
-          <span className={`${styles.signalValue} ${hasSearchVelocity ? getVelocityClass(searchVelocity) : styles.valuePending}`}>
-            {hasSearchVelocity ? formatVelocity(searchVelocity) : '—'}
+          <span className={styles.signalTitle}>News</span>
+          <span className={`${styles.signalValue} ${hasNewsVelocity ? getVelocityClass(newsVelocity) : styles.valuePending}`}>
+            {hasNewsVelocity ? formatVelocity(newsVelocity) : '—'}
           </span>
           <span className={styles.signalHint}>
-            {hasSearchVelocity ? 'Consumer search momentum, 90 days' : 'Collecting data'}
+            {hasNewsVelocity ? 'Press coverage momentum, 90 days' : 'Collecting data'}
           </span>
         </div>
 

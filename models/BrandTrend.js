@@ -1,14 +1,16 @@
 // models/BrandTrend.js
 // MongoDB schema for brand trend data.
 //
-// Stores Reddit engagement, Google Search Velocity,
-// YouTube Social Velocity, PowerWeb intelligence (split into
-// editorial and retail sub-signals), and rolling history arrays
-// for trend direction tracking.
+// Stores Reddit engagement, Google News coverage, YouTube Social
+// Velocity, PowerWeb intelligence (split into editorial and retail
+// sub-signals), and rolling history arrays for trend direction
+// tracking.
 //
 // HISTORY ARRAYS (one per signal):
 //   scoreHistory      - Reddit upvote-weighted score over time
-//   googleHistory     - Google Search Velocity over time
+//   googleHistory     - LEGACY: Google Trends search interest
+//                       (preserved for one cycle, no longer written)
+//   newsHistory       - Google News article count velocity over time
 //   youtubeHistory    - YouTube Social Velocity over time
 //   powerWebHistory   - Combined PowerWeb score (display value)
 //   editorialHistory  - Editorial Pulse sub-signal over time
@@ -19,7 +21,18 @@
 //   analysis layer reads these arrays to detect acceleration,
 //   deceleration, and breakout patterns.
 //
-// POWERWEB DESIGN (added 2026-04-28 rebuild):
+// GOOGLE SIGNAL CHANGE (2026-04-28):
+//   The Google slot was previously fed by the unofficial Google
+//   Trends API, which fails approximately 80% of the time from
+//   Vercel's datacenter IP ranges. The signal has been replaced
+//   with Google News RSS, which is free, public, and reliable.
+//
+//   New fields: newsVelocity, newsHistory, lastNewsUpdate.
+//   Legacy fields (searchVelocity, googleInterest, googleHistory,
+//   lastGoogleUpdate) remain in the schema so existing records do
+//   not lose data. They are no longer written to.
+//
+// POWERWEB DESIGN (2026-04-28 rebuild):
 //   PowerWeb is split internally into two sub-signals:
 //     - Editorial Pulse: trade publication archive coverage
 //     - Retail Position: retailer category page placement
@@ -85,7 +98,30 @@ const brandTrendSchema = new mongoose.Schema({
     default: [],
   },
 
-  // --- Google Trends fields ---
+  // --- Google News fields (active) ---
+  newsVelocity: {
+    type: Number,
+    default: null,
+  },
+  lastNewsUpdate: {
+    type: Date,
+    default: null,
+  },
+  newsHistory: {
+    type: [
+      {
+        value: { type: Number, required: true },
+        weekOf: { type: Date, required: true },
+      },
+    ],
+    default: [],
+  },
+
+  // --- Legacy Google Trends fields (preserved, no longer written) ---
+  // Kept in the schema so historical records do not lose their
+  // last successful Google Trends pull. Frontend now reads
+  // newsVelocity instead. These fields can be removed in a future
+  // schema cleanup once we are confident in the news pipeline.
   googleInterest: {
     type: Number,
     default: null,
@@ -132,9 +168,6 @@ const brandTrendSchema = new mongoose.Schema({
   },
 
   // --- PowerWeb combined display fields ---
-  // powerWebScore is the dashboard-facing value, computed as a
-  // weighted blend of editorialScore and retailScore. The user
-  // sees one number; the AI reads all three.
   powerWebScore: {
     type: Number,
     default: null,

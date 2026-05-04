@@ -1,8 +1,19 @@
 // models/BeverageTrend.js
-// MongoDB schema for beverage trend data.
-// Stores Reddit engagement, Google Search Velocity,
-// YouTube Social Velocity, PowerWeb retailer intelligence,
-// and rolling history arrays for trend direction tracking.
+// MongoDB schema for beverage category trend data.
+//
+// Beverage categories track subcategory-level signals (e.g.
+// "bourbon", "natural wine", "kombucha"). The categories list
+// is on the roadmap but not yet built into the dashboard. The
+// data is collected anyway so the categories list will have
+// historical depth from day one when it ships.
+//
+// SIGNAL FIELDS:
+//   Reddit            - score, mentions, subredditBreakdown
+//   Google News       - newsVelocity, newsHistory (added 2026-04-28)
+//   YouTube           - socialVelocity, youtubeHistory
+//   Wikipedia         - wikipediaVelocity, wikipediaHistory (added 2026-05-04)
+//   Legacy PowerWeb   - preserved (no longer written)
+//   Legacy Google     - preserved (no longer written)
 
 import mongoose from 'mongoose';
 
@@ -48,20 +59,16 @@ const beverageTrendSchema = new mongoose.Schema({
     default: {},
   },
 
-  // --- Google Trends fields ---
-  googleInterest: {
+  // --- Google News fields (active) ---
+  newsVelocity: {
     type: Number,
     default: null,
   },
-  searchVelocity: {
-    type: Number,
-    default: null,
-  },
-  lastGoogleUpdate: {
+  lastNewsUpdate: {
     type: Date,
     default: null,
   },
-  googleHistory: {
+  newsHistory: {
     type: [
       {
         value: { type: Number, required: true },
@@ -71,7 +78,7 @@ const beverageTrendSchema = new mongoose.Schema({
     default: [],
   },
 
-  // --- YouTube fields ---
+  // --- YouTube fields (active) ---
   youtubeScore: {
     type: Number,
     default: null,
@@ -94,10 +101,53 @@ const beverageTrendSchema = new mongoose.Schema({
     default: [],
   },
 
-  // --- PowerWeb fields ---
-  // Retailer homepage intelligence score (0-100).
-  // Measures how prominently this term appears across
-  // major beverage retailer websites.
+  // --- WikiTrend fields (active) ---
+  wikipediaVelocity: {
+    type: Number,
+    default: null,
+  },
+  wikipediaPageviews: {
+    type: Number,
+    default: null,
+  },
+  lastWikipediaUpdate: {
+    type: Date,
+    default: null,
+  },
+  wikipediaHistory: {
+    type: [
+      {
+        value: { type: Number, required: true },
+        weekOf: { type: Date, required: true },
+      },
+    ],
+    default: [],
+  },
+
+  // --- Legacy Google Trends fields (preserved) ---
+  googleInterest: {
+    type: Number,
+    default: null,
+  },
+  searchVelocity: {
+    type: Number,
+    default: null,
+  },
+  lastGoogleUpdate: {
+    type: Date,
+    default: null,
+  },
+  googleHistory: {
+    type: [
+      {
+        value: { type: Number, required: true },
+        weekOf: { type: Date, required: true },
+      },
+    ],
+    default: [],
+  },
+
+  // --- Legacy PowerWeb fields (preserved) ---
   powerWebScore: {
     type: Number,
     default: null,
@@ -106,7 +156,6 @@ const beverageTrendSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
-  // Per-retailer breakdown: { "totalwine": 85, "bevmo": 72 }
   powerWebBreakdown: {
     type: Map,
     of: Number,

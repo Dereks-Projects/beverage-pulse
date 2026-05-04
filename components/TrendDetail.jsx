@@ -2,19 +2,19 @@
 // Expandable detail panel for a TrendCard.
 // Layout:
 //   - Brand Signal score centered as hero number
-//   - Four signal quadrants: Buzz, News, Social, PowerWeb
+//   - Four signal quadrants: Buzz, News, Social, WikiTrend
 //   - Each with one-line human-language explainer
 //   - Rank change
 //   - AI analysis placeholder
 //   - Subreddit breakdown bars
 //   - Link to About page
 //
-// SIGNAL CHANGE (2026-04-28):
-//   The Search slot has been replaced with News. The Google Trends
-//   API was unreliable from Vercel's hosting; Google News RSS is
-//   a reliable, free, public alternative. The signal now reads
-//   newsVelocity from the brand record. See lib/googleTrends.js
-//   for the data layer.
+// SIGNAL CHANGE LOG:
+//   2026-04-28: Search slot replaced with News (Google News RSS)
+//   2026-05-04: PowerWeb slot replaced with WikiTrend (Wikipedia
+//               pageview velocity). PowerWeb fields preserved in
+//               the schema but no longer displayed. The signal now
+//               reads wikipediaVelocity from the brand record.
 
 import Link from 'next/link';
 import styles from './TrendDetail.module.css';
@@ -38,16 +38,6 @@ function getVelocityClass(value) {
   return styles.valueFlat;
 }
 
-/**
- * Get the CSS class for a PowerWeb score.
- */
-function getPowerWebClass(value) {
-  if (value === null || value === undefined) return '';
-  if (value >= 60) return styles.valueUp;
-  if (value <= 25) return styles.valueDown;
-  return styles.valueFlat;
-}
-
 export default function TrendDetail({ trend, isOpen, maxScore }) {
   const {
     score,
@@ -59,13 +49,13 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
     newsVelocity,
     youtubeScore,
     socialVelocity,
-    powerWebScore,
+    wikipediaVelocity,
     pulseScore,
   } = trend;
 
   const hasNewsVelocity = newsVelocity !== null && newsVelocity !== undefined;
   const hasSocialVelocity = socialVelocity !== null && socialVelocity !== undefined;
-  const hasPowerWeb = powerWebScore !== null && powerWebScore !== undefined;
+  const hasWikipediaVelocity = wikipediaVelocity !== null && wikipediaVelocity !== undefined;
   const hasPulse = pulseScore !== null && pulseScore !== undefined;
 
   // Subreddit breakdown
@@ -127,14 +117,14 @@ export default function TrendDetail({ trend, isOpen, maxScore }) {
           </span>
         </div>
 
-        {/* PowerWeb */}
+        {/* WikiTrend (Wikipedia) */}
         <div className={styles.signalBlock}>
-          <span className={styles.signalTitle}>PowerWeb</span>
-          <span className={`${styles.signalValue} ${hasPowerWeb ? getPowerWebClass(powerWebScore) : styles.valuePending}`}>
-            {hasPowerWeb ? powerWebScore : '—'}
+          <span className={styles.signalTitle}>WikiTrend</span>
+          <span className={`${styles.signalValue} ${hasWikipediaVelocity ? getVelocityClass(wikipediaVelocity) : styles.valuePending}`}>
+            {hasWikipediaVelocity ? formatVelocity(wikipediaVelocity) : '—'}
           </span>
           <span className={styles.signalHint}>
-            {hasPowerWeb ? 'Retailer and editorial positioning' : 'Collecting data'}
+            {hasWikipediaVelocity ? 'Discovery momentum, 90 days' : 'Collecting data'}
           </span>
         </div>
       </div>

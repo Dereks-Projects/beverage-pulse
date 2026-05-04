@@ -9,8 +9,12 @@
       "schedule": "0 6 * * 1-5"
     },
     {
+      "path": "/api/cron/wikipedia",
+      "schedule": "0 8 * * 1"
+    },
+    {
       "path": "/api/cron/youtube",
-      "schedule": "0 8 * * 1-5"
+      "schedule": "0 9 * * 1-5"
     },
     {
       "path": "/api/cron/powerweb",

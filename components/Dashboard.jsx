@@ -1,12 +1,10 @@
 // components/Dashboard.jsx
 // ==========================================================================
-// Trending Brands dashboard. Single list. Full width.
+// Trending Brands dashboard. Single list, always ordered by the AI rank.
 //
-// Shows the top 20 brands ranked by Brand Signal: a composite score
-// from Buzz (Reddit), Search (Google), Social (YouTube), and
-// PowerWeb (5-layer editorial and retail intelligence).
-//
-// Trending Categories will be added as a toggle later.
+// There is no user-facing sort control. The rank is the product's point of
+// view, so the board's order is fixed to aiRank, lowest number first. The
+// View toggle and the category filter narrow the list; they never reorder it.
 // ==========================================================================
 
 'use client';
@@ -15,8 +13,6 @@ import { useState, useMemo } from 'react';
 import TrendCard from './TrendCard';
 import FilterBar from './FilterBar';
 import ViewToggle from './ViewToggle';
-import SortToggle from './SortToggle';
-import { calculateBrandSignal } from '../lib/pulseScore';
 import {
   CATEGORIES,
   BRAND_TAXONOMY,
@@ -43,25 +39,6 @@ function getParentGroup(name) {
 }
 
 /**
- * Find the highest Reddit score in an array of trends.
- * Used for Buzz normalization in Brand Signal calculation.
- */
-function getMaxScore(trends) {
-  if (trends.length === 0) return 0;
-  return Math.max(...trends.map((t) => t.score || 0));
-}
-
-/**
- * Add Brand Signal scores to brand trends.
- */
-function addBrandSignalScores(trends, maxScore) {
-  return trends.map((trend) => ({
-    ...trend,
-    pulseScore: calculateBrandSignal(trend, maxScore),
-  }));
-}
-
-/**
  * Apply view and category filters.
  */
 function filterTrends(trends, view, category) {
@@ -83,37 +60,20 @@ function filterTrends(trends, view, category) {
 }
 
 /**
- * Sort by the selected key.
+ * Order the board by the AI rank, lowest number first. Brands without a
+ * numeric rank fall to the bottom.
  */
-function sortTrends(trends, sortKey) {
-  const sorted = [...trends];
-
-  switch (sortKey) {
-    case 'score':
-      return sorted.sort((a, b) => (b.pulseScore || 0) - (a.pulseScore || 0));
-    case 'mentions':
-      return sorted.sort((a, b) => b.mentions - a.mentions);
-    case 'name':
-      return sorted.sort((a, b) => a.name.localeCompare(b.name));
-    default:
-      return sorted;
-  }
-}
-
-/**
- * Recalculate display ranks.
- */
-function applyDisplayRanks(trends) {
-  return trends.map((trend, index) => ({
-    ...trend,
-    displayRank: index + 1,
-  }));
+function sortByRank(trends) {
+  return [...trends].sort((a, b) => {
+    const ra = typeof a.aiRank === 'number' ? a.aiRank : Infinity;
+    const rb = typeof b.aiRank === 'number' ? b.aiRank : Infinity;
+    return ra - rb;
+  });
 }
 
 export default function Dashboard({ brandTrends }) {
   const [activeView, setActiveView] = useState('all');
   const [activeFilter, setActiveFilter] = useState('all');
-  const [activeSort, setActiveSort] = useState('score');
 
   function handleViewChange(newView) {
     setActiveView(newView);
@@ -128,34 +88,17 @@ export default function Dashboard({ brandTrends }) {
       .map((cat) => cat.id);
   }, [activeView]);
 
-  const maxBrandScore = useMemo(
-    () => getMaxScore(brandTrends),
-    [brandTrends]
-  );
-
-  const brandsWithSignal = useMemo(
-    () => addBrandSignalScores(brandTrends, maxBrandScore),
-    [brandTrends, maxBrandScore]
-  );
-
-  const filteredBrands = applyDisplayRanks(
-    sortTrends(
-      filterTrends(brandsWithSignal, activeView, activeFilter),
-      activeSort
-    )
+  const filteredBrands = sortByRank(
+    filterTrends(brandTrends, activeView, activeFilter)
   );
 
   return (
     <div className={styles.dashboard}>
-      {/* Top controls */}
+      {/* Top controls: view toggle only */}
       <div className={styles.controlsRow}>
         <ViewToggle
           activeView={activeView}
           onViewChange={handleViewChange}
-        />
-        <SortToggle
-          activeSort={activeSort}
-          onSortChange={setActiveSort}
         />
       </div>
 
@@ -183,7 +126,6 @@ export default function Dashboard({ brandTrends }) {
               key={trend._id}
               trend={trend}
               type="brand"
-              maxScore={maxBrandScore}
             />
           ))}
           {filteredBrands.length === 0 && (

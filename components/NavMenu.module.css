@@ -122,14 +122,8 @@
 }
 
 /* --------------------------------------------------------------------------
-   Data status section
+   Shared section label (used by the Legal heading)
    -------------------------------------------------------------------------- */
-.statusSection {
-  margin-top: var(--space-6);
-  padding-top: var(--space-5);
-  border-top: 1px solid var(--surface-border);
-}
-
 .sectionLabel {
   font-size: 11px;
   font-weight: var(--weight-semibold);

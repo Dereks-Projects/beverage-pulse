@@ -1,9 +1,9 @@
 /* components/Header.module.css */
 /* ==========================================================================
-   Shared sticky header: logo, data date, freshness dots, hamburger menu.
-   Used on every page.
-   z-index 10000 keeps header above the NavMenu overlay (9998) and
-   panel (9999) so the hamburger X button stays visible and clickable.
+   Shared sticky header: centered wordmark and data week, portfolio chevron
+   pinned left, hamburger menu pinned right. Used on every page.
+   z-index 10000 keeps the header above the slide-in panels (9999) and their
+   overlays (9998) so the chevron and hamburger stay visible and clickable.
    ========================================================================== */
 
 .header {
@@ -15,18 +15,22 @@
 }
 
 .headerContent {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: var(--space-3) var(--space-4);
 }
 
-.headerLeft {
+/* Centered wordmark + data week */
+.headerCenter {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 2px;
+  text-align: center;
 }
 
 .logo {
@@ -47,4 +51,42 @@
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+/* Portfolio chevron pinned left */
+.headerPortfolio {
+  position: absolute;
+  left: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Hamburger pinned right */
+.headerNav {
+  position: absolute;
+  right: var(--space-4);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .headerContent {
+    padding: var(--space-4) var(--space-6);
+  }
+
+  .logo {
+    font-size: var(--text-xl);
+  }
+
+  .headerPortfolio {
+    left: var(--space-6);
+  }
+
+  .headerNav {
+    right: var(--space-6);
+  }
 }

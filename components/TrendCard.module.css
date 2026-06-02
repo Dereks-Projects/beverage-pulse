@@ -1,14 +1,15 @@
 /* components/TrendCard.module.css */
 /* ==========================================================================
    TrendCard: the core visual unit of the dashboard.
-   Card surface: rank, name, category, Pulse score, trend arrow.
-   The Pulse score is the hero number. Clean and scannable.
+
+   Collapsed surface: rank, name, subcategory, directional signal, and the
+   lead sentence (or a NEW state). The lead sentence is the hero now, not a
+   number. Built entirely on the existing design tokens.
    ========================================================================== */
 
 .card {
-  display: grid;
-  grid-template-columns: 40px 1fr auto;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-4) var(--space-4);
   background: var(--surface-raised);
@@ -30,22 +31,33 @@
   border-bottom-right-radius: 0;
 }
 
-/* --- Rank number (left column) --- */
+/* --------------------------------------------------------------------------
+   Header row: rank | name + category | directional signal
+   -------------------------------------------------------------------------- */
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* --- Rank number --- */
 .rank {
   font-family: var(--font-mono);
-  font-size: var(--text-xl);
+  font-size: var(--text-2xl);
   font-weight: var(--weight-bold);
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   text-align: center;
   line-height: 1;
+  min-width: 32px;
 }
 
 .rankTop {
   color: var(--text-primary);
 }
 
-/* --- Center content (name + category) --- */
+/* --- Name + category --- */
 .info {
   display: flex;
   flex-direction: column;
@@ -54,12 +66,11 @@
 }
 
 .name {
-  font-size: var(--text-base);
-  font-weight: var(--weight-semibold);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-bold);
   color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 
 .categoryBadge {
@@ -68,57 +79,27 @@
   width: fit-content;
   padding: 1px var(--space-2);
   font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: 0.02em;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   border-radius: var(--radius-full);
   background: var(--badge-bg, var(--surface-overlay));
   color: var(--badge-color, var(--text-secondary));
 }
 
-/* --- Right column: Pulse score + trend arrow --- */
-.pulseBlock {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.pulseRow {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-}
-
-.pulseLabel {
-  font-size: var(--text-xs);
-  font-weight: var(--weight-medium);
-  color: var(--signal-up);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-}
-
-.pulseValue {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xl);
-  font-weight: var(--weight-bold);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
-  line-height: 1;
-}
-
-/* --- Change indicator --- */
+/* --- Directional signal pill --- */
 .change {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
-  padding: 1px var(--space-2);
+  padding: 2px var(--space-3);
   border-radius: var(--radius-full);
   line-height: 1.4;
+  white-space: nowrap;
 }
 
 .changeUp {
@@ -148,23 +129,61 @@
 }
 
 /* --------------------------------------------------------------------------
+   Lead sentence: the hero text of the collapsed card
+   -------------------------------------------------------------------------- */
+.lead {
+  font-size: var(--text-base);
+  font-weight: var(--weight-normal);
+  color: var(--text-primary);
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   NEW state: shown when a brand has no analysis yet
+   -------------------------------------------------------------------------- */
+.newState {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.newStar {
+  font-size: var(--text-base);
+  color: var(--signal-new);
+  line-height: 1;
+}
+
+.newLabel {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-bold);
+  letter-spacing: 0.06em;
+  color: var(--signal-new);
+}
+
+.newHint {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
    Responsive
    -------------------------------------------------------------------------- */
 @media (min-width: 768px) {
   .card {
-    grid-template-columns: 48px 1fr auto;
-    padding: var(--space-4) var(--space-6);
+    padding: var(--space-5) var(--space-6);
   }
 
   .rank {
-    font-size: var(--text-2xl);
+    font-size: var(--text-3xl);
+    min-width: 44px;
   }
 
   .name {
-    font-size: var(--text-lg);
+    font-size: var(--text-2xl);
   }
 
-  .pulseValue {
-    font-size: var(--text-3xl);
+  .lead {
+    font-size: var(--text-lg);
+    line-height: 1.5;
   }
 }

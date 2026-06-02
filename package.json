@@ -16,6 +16,7 @@
     "mongoose": "^9.4.1",
     "next": "16.2.2",
     "node-cron": "^4.2.1",
+    "openai": "^6.39.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "snoowrap": "^1.23.0"

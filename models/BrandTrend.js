@@ -3,8 +3,9 @@
 //
 // Stores Reddit engagement, Google News coverage, YouTube Social
 // Velocity, PowerWeb intelligence (legacy, no longer written but
-// fields preserved), Wikipedia pageview velocity (WikiTrend), and
-// rolling history arrays for trend direction tracking.
+// fields preserved), Wikipedia pageview velocity (WikiTrend), the
+// AI intelligence layer, and rolling history arrays for trend
+// direction tracking.
 //
 // HISTORY ARRAYS (one per signal):
 //   scoreHistory      - Reddit upvote-weighted score over time
@@ -21,6 +22,29 @@
 //   analysis layer reads these arrays to detect acceleration,
 //   deceleration, and breakout patterns.
 //
+// AI INTELLIGENCE LAYER FIELDS (active):
+//   Two separate cron runs write these, in order.
+//
+//   Ranking run (runs first, reasoning model):
+//     aiRank        - the defensible weekly rank, replaces the old
+//                     placeholder composite as the sort driver
+//     aiRationale   - the ranking agent's short reason for the rank.
+//                     Fed to the analysis agent as an extra input.
+//                     Stored for the member-only tier later. Not
+//                     shown on the free card.
+//     aiRankDate    - when the ranking run wrote the rank
+//     aiRuleVersion - which version of the ranking rule produced it
+//
+//   Analysis run (runs second, GPT-4o, temperature zero):
+//     aiHeadline    - the hook sentence for the card
+//     aiAnalysis    - the three-sentence analytical core
+//     aiClosing     - the closing risk sentence
+//     aiAnalysisDate- when the analysis run wrote the synopsis
+//
+//   All AI fields default to null. A brand that has not yet been
+//   ranked or analyzed reads cleanly as "no data," so the dashboard
+//   degrades gracefully instead of breaking on a missing value.
+//
 // SIGNAL CHANGE LOG:
 //   2026-04-28: Replaced Google Trends with Google News RSS for
 //               the consumer-search slot.
@@ -28,6 +52,9 @@
 //               WikiTrend (Wikipedia pageview velocity) as the
 //               fourth signal. PowerWeb fields preserved for
 //               possible future revival.
+//   2026-05-21: Added the AI intelligence layer fields. The legacy
+//               composite is condemned and will stop driving the
+//               sort once the ranking service writes aiRank.
 //
 // LEGACY FIELDS:
 //   googleInterest, searchVelocity, googleHistory, lastGoogleUpdate,
@@ -159,6 +186,46 @@ const brandTrendSchema = new mongoose.Schema({
     default: [],
   },
 
+  // --- AI intelligence layer fields (active) ---
+  // Written by the ranking run (first):
+  aiRank: {
+    type: Number,
+    default: null,
+  },
+  aiRationale: {
+    type: String,
+    default: null,
+  },
+  aiRankDate: {
+    type: Date,
+    default: null,
+  },
+  aiRuleVersion: {
+    type: String,
+    default: null,
+  },
+  // Written by the analysis run (second):
+  aiHeadline: {
+    type: String,
+    default: null,
+  },
+  aiAnalysis: {
+    type: String,
+    default: null,
+  },
+  aiInsight: {
+    type: String,
+    default: null,
+  },
+  aiClosing: {
+    type: String,
+    default: null,
+  },
+  aiAnalysisDate: {
+    type: Date,
+    default: null,
+  },
+
   // --- Legacy Google Trends fields (preserved, no longer written) ---
   googleInterest: {
     type: Number,
@@ -255,7 +322,13 @@ const brandTrendSchema = new mongoose.Schema({
   },
 });
 
+// Existing index supports the legacy rank sort and is left in place.
 brandTrendSchema.index({ weekOf: -1, rank: 1 });
+
+// New index supports the AI rank sort, which the dashboard will use
+// once the ranking service writes aiRank. Keeps that query fast as
+// the data set grows.
+brandTrendSchema.index({ weekOf: -1, aiRank: 1 });
 
 const BrandTrend =
   mongoose.models.BrandTrend || mongoose.model('BrandTrend', brandTrendSchema);

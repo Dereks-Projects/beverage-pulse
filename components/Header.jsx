@@ -1,30 +1,21 @@
 // components/Header.jsx
-// Shared header component used on every page.
-// This is a server component that fetches its own data from MongoDB.
-// Renders: logo, data week, freshness indicators, hamburger menu.
+// Shared header used on every page. Server component that reads the data week
+// from MongoDB and renders a centered wordmark and data week, with the
+// portfolio chevron pinned left and the hamburger menu pinned right.
 
 import connectToDatabase from '../lib/db';
 import BeverageTrend from '../models/BeverageTrend';
 import BrandTrend from '../models/BrandTrend';
+import PortfolioMenu from './PortfolioMenu';
 import NavMenu from './NavMenu';
-import DataFreshness from './DataFreshness';
 import styles from './Header.module.css';
 
 export default async function Header() {
   await connectToDatabase();
 
-  // Fetch minimal data for the header: latest weekOf date and freshness timestamps
-  const latestBeverage = await BeverageTrend.findOne()
-    .sort({ weekOf: -1 })
-    .select('weekOf lastUpdated lastGoogleUpdate')
-    .lean();
+  const latestBeverage = await BeverageTrend.findOne().sort({ weekOf: -1 }).select('weekOf').lean();
+  const latestBrand = await BrandTrend.findOne().sort({ weekOf: -1 }).select('weekOf').lean();
 
-  const latestBrand = await BrandTrend.findOne()
-    .sort({ weekOf: -1 })
-    .select('weekOf lastUpdated lastGoogleUpdate')
-    .lean();
-
-  // Determine the display date (week of)
   const weekOfDate = latestBeverage?.weekOf || latestBrand?.weekOf || null;
   const dataDate = weekOfDate
     ? new Date(weekOfDate).toLocaleDateString('en-US', {
@@ -34,41 +25,19 @@ export default async function Header() {
       })
     : 'No data';
 
-  // Find the most recent Reddit update across both collections
-  const redditDates = [
-    latestBeverage?.lastUpdated,
-    latestBrand?.lastUpdated,
-  ].filter(Boolean);
-  const redditDate = redditDates.length > 0
-    ? redditDates.reduce((a, b) => (a > b ? a : b))
-    : null;
-
-  // Find the most recent Google update across both collections
-  const googleDates = [
-    latestBeverage?.lastGoogleUpdate,
-    latestBrand?.lastGoogleUpdate,
-  ].filter(Boolean);
-  const googleDate = googleDates.length > 0
-    ? googleDates.reduce((a, b) => (a > b ? a : b))
-    : null;
-
-  // Serialize dates for client components (NavMenu is a client component)
-  const redditDateStr = redditDate ? new Date(redditDate).toISOString() : null;
-  const googleDateStr = googleDate ? new Date(googleDate).toISOString() : null;
-
   return (
     <header className={styles.header}>
       <div className={styles.headerContent}>
-        <div className={styles.headerLeft}>
-          <h1 className={styles.logo}>
-            Beverage<span className={styles.logoAccent}>Pulse</span>
-          </h1>
-          <span className={styles.dataDate}>
-            Week of {dataDate}
-          </span>
-          <DataFreshness redditDate={redditDateStr} googleDate={googleDateStr} />
+        <div className={styles.headerPortfolio}>
+          <PortfolioMenu />
         </div>
-        <NavMenu redditDate={redditDateStr} googleDate={googleDateStr} />
+        <div className={styles.headerCenter}>
+          <h1 className={styles.logo}>Beverage<span className={styles.logoAccent}>Pulse</span></h1>
+          <span className={styles.dataDate}>Week of {dataDate}</span>
+        </div>
+        <div className={styles.headerNav}>
+          <NavMenu />
+        </div>
       </div>
     </header>
   );

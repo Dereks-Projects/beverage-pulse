@@ -15,10 +15,6 @@
     {
       "path": "/api/cron/youtube",
       "schedule": "0 9 * * 1-5"
-    },
-    {
-      "path": "/api/cron/powerweb",
-      "schedule": "0 10 * * 1-5"
     }
   ]
 }

@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { createPortal } from 'react-dom';
-import DataFreshness from './DataFreshness';
 import styles from './NavMenu.module.css';
 
 const NAV_LINKS = [
   { href: '/', label: 'Dashboard' },
+  { href: '/about-the-data', label: 'About the Data' },
   { href: '/about', label: 'About' },
+  { href: 'mailto:derek@informativemedia.com', label: 'Contact' },
 ];
 
 const LEGAL_LINKS = [
@@ -18,7 +19,7 @@ const LEGAL_LINKS = [
   { href: '/content-policy', label: 'Content Policy' },
 ];
 
-function MenuPanel({ isOpen, onClose, redditDate, googleDate, pathname }) {
+function MenuPanel({ isOpen, onClose, pathname }) {
   if (typeof window === 'undefined') return null;
 
   return createPortal(
@@ -33,11 +34,6 @@ function MenuPanel({ isOpen, onClose, redditDate, googleDate, pathname }) {
             <a key={link.href} href={link.href} onClick={onClose} className={`${styles.navLink} ${pathname === link.href ? styles.navLinkActive : ''}`}>{link.label}</a>
           ))}
         </nav>
-
-        <div className={styles.statusSection}>
-          <p className={styles.sectionLabel}>Data Status</p>
-          <DataFreshness redditDate={redditDate} googleDate={googleDate} />
-        </div>
 
         <div className={styles.legalSection}>
           <p className={styles.sectionLabel}>Legal</p>
@@ -55,7 +51,7 @@ function MenuPanel({ isOpen, onClose, redditDate, googleDate, pathname }) {
   );
 }
 
-export default function NavMenu({ redditDate, googleDate }) {
+export default function NavMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
@@ -88,7 +84,7 @@ export default function NavMenu({ redditDate, googleDate }) {
       </button>
 
       {mounted && (
-        <MenuPanel isOpen={isOpen} onClose={() => setIsOpen(false)} redditDate={redditDate} googleDate={googleDate} pathname={pathname} />
+        <MenuPanel isOpen={isOpen} onClose={() => setIsOpen(false)} pathname={pathname} />
       )}
     </>
   );

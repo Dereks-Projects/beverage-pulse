@@ -1,0 +1,132 @@
+/* app/about-the-data/page.module.css */
+/* ==========================================================================
+   About the Data: methodology and positioning page. Dark and congruent with
+   the dashboard, built entirely on the shared design tokens. Single column,
+   comfortable reading width, card treatment for the four signals.
+   ========================================================================== */
+
+.main {
+  min-height: 100vh;
+  padding-bottom: var(--space-12);
+}
+
+.content {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+}
+
+/* --------------------------------------------------------------------------
+   Back link
+   -------------------------------------------------------------------------- */
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: var(--space-8);
+  transition: color var(--transition-fast);
+}
+
+.backLink:hover {
+  color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   Title and subtitle
+   -------------------------------------------------------------------------- */
+.pageTitle {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-3);
+}
+
+.pageSubtitle {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: var(--space-10);
+}
+
+/* --------------------------------------------------------------------------
+   Section blocks
+   -------------------------------------------------------------------------- */
+.section {
+  margin-bottom: var(--space-10);
+}
+
+.sectionTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.paragraph {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: var(--space-4);
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Four signals: card grid, echoing the dashboard tiles
+   -------------------------------------------------------------------------- */
+.signalGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
+}
+
+.signalCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+}
+
+.signalName {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.signalText {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .content {
+    padding: var(--space-10) var(--space-6);
+  }
+
+  .pageTitle {
+    font-size: var(--text-3xl);
+  }
+
+  .signalGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

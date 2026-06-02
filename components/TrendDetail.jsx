@@ -1,23 +1,29 @@
-// components/TrendDetail.jsx
+// app/components/TrendDetail.jsx
+// ==========================================================================
 // Expandable detail panel for a TrendCard.
-// Layout:
-//   - Brand Signal score centered as hero number
-//   - Four signal quadrants: Buzz, News, Social, WikiTrend
-//   - Each with one-line human-language explainer
-//   - Rank change
-//   - AI analysis placeholder
-//   - Subreddit breakdown bars
-//   - Link to About page
 //
-// SIGNAL CHANGE LOG:
-//   2026-04-28: Search slot replaced with News (Google News RSS)
-//   2026-05-04: PowerWeb slot replaced with WikiTrend (Wikipedia
-//               pageview velocity). PowerWeb fields preserved in
-//               the schema but no longer displayed. The signal now
-//               reads wikipediaVelocity from the brand record.
+// Shows, in order:
+//   1. The four signal tiles (Online Buzz, Video, News, WikiTrend) as the
+//      evidence. Each tile carries a plain description line and the time
+//      window on its own second line, so all four read in unison.
+//   2. The rank line, with honest movement, and a tooltip explaining it.
+//   3. The full three-sentence analysis (aiAnalysis)
+//   4. The bolded closing (aiClosing), with a tooltip explaining how the
+//      confidence is judged.
+//   5. The About the Data link (points to the dedicated method page).
+// ==========================================================================
 
 import Link from 'next/link';
 import styles from './TrendDetail.module.css';
+import Tooltip from './Tooltip';
+
+// Tooltip after the rank/movement line. Plain reader language, edit freely.
+const TREND_TOOLTIP =
+  'How the brand has moved since last week. New to the ranking means it just entered the board, so there is no prior spot to compare yet; once it has a week of history this shows how far it rose or fell.';
+
+// Tooltip after the closing sentence. Explains the corroboration idea.
+const CORROBORATION_TOOLTIP =
+  'How confident this read is, based on how many of the four signals point the same way. Several agreeing is a strong, corroborated call; one moving alone is only a flag worth watching.';
 
 /**
  * Format a velocity percentage for display.
@@ -29,7 +35,7 @@ function formatVelocity(value) {
 }
 
 /**
- * Get the CSS class for a velocity value.
+ * Color class for a velocity value.
  */
 function getVelocityClass(value) {
   if (value === null || value === undefined) return '';
@@ -38,136 +44,109 @@ function getVelocityClass(value) {
   return styles.valueFlat;
 }
 
-export default function TrendDetail({ trend, isOpen, maxScore }) {
+export default function TrendDetail({ trend, isOpen }) {
   const {
     score,
-    mentions,
-    rank,
-    change,
-    previousRank,
-    subredditBreakdown,
     newsVelocity,
-    youtubeScore,
     socialVelocity,
     wikipediaVelocity,
-    pulseScore,
+    aiRank,
+    previousAiRank,
+    aiAnalysis,
+    aiClosing,
   } = trend;
 
-  const hasNewsVelocity = newsVelocity !== null && newsVelocity !== undefined;
-  const hasSocialVelocity = socialVelocity !== null && socialVelocity !== undefined;
-  const hasWikipediaVelocity = wikipediaVelocity !== null && wikipediaVelocity !== undefined;
-  const hasPulse = pulseScore !== null && pulseScore !== undefined;
+  const hasNews = newsVelocity !== null && newsVelocity !== undefined;
+  const hasSocial = socialVelocity !== null && socialVelocity !== undefined;
+  const hasWiki = wikipediaVelocity !== null && wikipediaVelocity !== undefined;
 
-  // Subreddit breakdown
-  const breakdownEntries = Object.entries(subredditBreakdown || {})
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 6);
+  const hasAnalysis = typeof aiAnalysis === 'string' && aiAnalysis.trim() !== '';
+  const hasClosing = typeof aiClosing === 'string' && aiClosing.trim() !== '';
 
-  const maxCount = breakdownEntries.length > 0 ? breakdownEntries[0][1] : 0;
-
-  // Rank change
-  let rankChangeText = 'New entry';
-  if (change === 'up' && previousRank) rankChangeText = `Up from #${previousRank}`;
-  else if (change === 'down' && previousRank) rankChangeText = `Down from #${previousRank}`;
-  else if (change === 'same') rankChangeText = 'Unchanged';
+  // Honest rank movement. With no previous rank stored yet, the brand is new
+  // to the ranking and we say so rather than inventing a direction.
+  let rankMovement = 'New to the ranking';
+  if (typeof previousAiRank === 'number') {
+    if (previousAiRank > aiRank) rankMovement = `Up from #${previousAiRank}`;
+    else if (previousAiRank < aiRank) rankMovement = `Down from #${previousAiRank}`;
+    else rankMovement = 'Unchanged';
+  }
 
   return (
     <div
       className={`${styles.detail} ${isOpen ? styles.detailOpen : ''}`}
       aria-hidden={!isOpen}
     >
-      {/* Brand Signal hero score */}
-      <div className={styles.pulseHero}>
-        <span className={styles.pulseValue}>
-          {hasPulse ? pulseScore : '—'}
-        </span>
-        <span className={styles.pulseLabel}>Brand Signal</span>
-      </div>
-
-      {/* Four signal quadrants */}
+      {/* Four signal tiles: the evidence behind the rank */}
       <div className={styles.signalGrid}>
-        {/* Buzz (Reddit) */}
         <div className={styles.signalBlock}>
-          <span className={styles.signalTitle}>Buzz</span>
+          <span className={styles.signalTitle}>Online Buzz</span>
           <span className={styles.signalValue}>
             {Math.round(score || 0).toLocaleString()}
           </span>
-          <span className={styles.signalHint}>Industry conversation this week</span>
+          <span className={styles.signalHint}>
+            How much people are talking about it online
+            <span className={styles.signalWindow}>This week</span>
+          </span>
         </div>
 
-        {/* Social (YouTube) */}
         <div className={styles.signalBlock}>
-          <span className={styles.signalTitle}>Social</span>
-          <span className={`${styles.signalValue} ${hasSocialVelocity ? getVelocityClass(socialVelocity) : styles.valuePending}`}>
-            {hasSocialVelocity ? formatVelocity(socialVelocity) : '—'}
+          <span className={styles.signalTitle}>Social Media</span>
+          <span className={`${styles.signalValue} ${hasSocial ? getVelocityClass(socialVelocity) : styles.valuePending}`}>
+            {hasSocial ? formatVelocity(socialVelocity) : '—'}
           </span>
           <span className={styles.signalHint}>
-            {hasSocialVelocity ? 'Creator attention momentum, 90 days' : 'Collecting data'}
+            {hasSocial ? 'How much people are watching videos about it' : 'Collecting data'}
+            {hasSocial && <span className={styles.signalWindow}>Last 90 days</span>}
           </span>
         </div>
 
-        {/* News (Google News) */}
         <div className={styles.signalBlock}>
           <span className={styles.signalTitle}>News</span>
-          <span className={`${styles.signalValue} ${hasNewsVelocity ? getVelocityClass(newsVelocity) : styles.valuePending}`}>
-            {hasNewsVelocity ? formatVelocity(newsVelocity) : '—'}
+          <span className={`${styles.signalValue} ${hasNews ? getVelocityClass(newsVelocity) : styles.valuePending}`}>
+            {hasNews ? formatVelocity(newsVelocity) : '—'}
           </span>
           <span className={styles.signalHint}>
-            {hasNewsVelocity ? 'Press coverage momentum, 90 days' : 'Collecting data'}
+            {hasNews ? 'How much the press is writing about it' : 'Collecting data'}
+            {hasNews && <span className={styles.signalWindow}>Last 90 days</span>}
           </span>
         </div>
 
-        {/* WikiTrend (Wikipedia) */}
         <div className={styles.signalBlock}>
           <span className={styles.signalTitle}>WikiTrend</span>
-          <span className={`${styles.signalValue} ${hasWikipediaVelocity ? getVelocityClass(wikipediaVelocity) : styles.valuePending}`}>
-            {hasWikipediaVelocity ? formatVelocity(wikipediaVelocity) : '—'}
+          <span className={`${styles.signalValue} ${hasWiki ? getVelocityClass(wikipediaVelocity) : styles.valuePending}`}>
+            {hasWiki ? formatVelocity(wikipediaVelocity) : '—'}
           </span>
           <span className={styles.signalHint}>
-            {hasWikipediaVelocity ? 'Discovery momentum, 90 days' : 'Collecting data'}
+            {hasWiki ? 'How often people are looking it up' : 'Collecting data'}
+            {hasWiki && <span className={styles.signalWindow}>Last 90 days</span>}
           </span>
         </div>
       </div>
 
-      {/* Rank row */}
+      {/* Rank line, with a tooltip explaining the movement */}
       <div className={styles.rankRow}>
         <span className={styles.rankInfo}>
-          <span className={styles.rankValue}>#{rank}</span> {rankChangeText}
+          <span className={styles.rankValue}>#{aiRank}</span> {rankMovement}
         </span>
+        <Tooltip text={TREND_TOOLTIP} align="left" />
       </div>
 
-      {/* AI analysis placeholder */}
-      <div className={styles.analysisBlock}>
-        <p className={styles.analysisText}>
-          AI-powered analysis will appear here. A 3-sentence synopsis of this
-          item's performance, trajectory, and what it means for your business.
-        </p>
-      </div>
-
-      {/* Subreddit breakdown */}
-      {breakdownEntries.length > 0 && (
-        <div className={styles.breakdownBlock}>
-          <p className={styles.breakdownTitle}>Where the buzz is</p>
-          <div className={styles.breakdownList}>
-            {breakdownEntries.map(([subreddit, count]) => (
-              <div key={subreddit} className={styles.breakdownItem}>
-                <span className={styles.subredditName}>r/{subreddit}</span>
-                <div className={styles.barWrapper}>
-                  <div
-                    className={styles.bar}
-                    style={{ width: `${(count / maxCount) * 100}%` }}
-                  />
-                </div>
-                <span className={styles.barCount}>{count}</span>
-              </div>
-            ))}
-          </div>
+      {/* The full three-sentence analysis */}
+      {hasAnalysis && (
+        <div className={styles.analysisBlock}>
+          <p className={styles.analysisBody}>{aiAnalysis}</p>
         </div>
       )}
 
-      {/* About link */}
+      {/* The bolded closing forward read, with a tooltip on corroboration */}
+      {hasClosing && (
+        <p className={styles.analysisClosing}>{aiClosing} <Tooltip text={CORROBORATION_TOOLTIP} align="left" /></p>
+      )}
+
+      {/* About the Data link (dedicated method page) */}
       <div className={styles.aboutLink}>
-        <Link href="/about" className={styles.aboutAnchor}>About the Data</Link>
+        <Link href="/about-the-data" className={styles.aboutAnchor}>About the Data</Link>
       </div>
     </div>
   );

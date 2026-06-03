@@ -1,0 +1,82 @@
+{
+  "meta": {
+    "source": "Beverage Culture Analysis: Category Signals in the U.S. Beverage Industry (expanded U.S. edition)",
+    "dataVintage": "Full-year 2025 data",
+    "prepared": "June 2026",
+    "note": "Category backdrop for the analysis closing. Direction and shape only, no figures and no brand names, so the firewall holds. Refresh when a new report is published. Keys match the brand subCategory tags in taxonomy.js."
+  },
+  "categories": {
+    "vodka": {
+      "direction": "declining",
+      "posture": "Mature and slowly shrinking, but still a workhorse for mixing. It is losing casual occasions to canned cocktails, smaller formats, and non-alcoholic options, and the softness runs across every price tier."
+    },
+    "gin": {
+      "direction": "contracting",
+      "posture": "A small, contracting category overall, while the higher-end, cocktail-driven end still holds an audience. It performs when there is a clear reason to choose it, not from sitting on the shelf."
+    },
+    "rum": {
+      "direction": "declining",
+      "posture": "A weak middle with a small premium bright spot. Everyday mixing rum is fading while a narrow group of drinkers trades up to more serious, higher-priced bottles."
+    },
+    "tequila": {
+      "direction": "normalizing",
+      "posture": "Cooling after years of fast growth rather than reversing. Drinkers are still in agave spirits, but spending is shifting down toward more accessible bottles after a long premium run."
+    },
+    "mezcal": {
+      "direction": "normalizing",
+      "posture": "Reported together with tequila. Agave spirits are normalizing after fast growth, with spending moving toward more accessible tiers rather than the category unwinding."
+    },
+    "whiskey": {
+      "direction": "mature",
+      "posture": "A large heritage family settling into a mature phase. Heritage and scarcity stories no longer guarantee trade-up, and the market is more cautious and more disciplined about inventory."
+    },
+    "scotch": {
+      "direction": "pressured",
+      "posture": "Prestige is intact but pressured. Committed single-malt drinkers still value provenance, while imported Scotch is exposed to tariffs, exchange rates, and slower restocking."
+    },
+    "bourbon": {
+      "direction": "resilient",
+      "posture": "One of the more resilient corners of whiskey, holding demand better than its peers. The new challenge is abundance: a large aging supply now has to be sold through rather than chased."
+    },
+    "wine": {
+      "direction": "declining",
+      "posture": "In a multi-year correction, not a one-year dip. It has lost some of its automatic default status, and strong and weak producers are pulling apart, with direct hospitality relationships carrying the healthy ones."
+    },
+    "beer": {
+      "direction": "contracting",
+      "posture": "Structurally smaller, not just having an off year. It is no longer the automatic choice for every casual occasion, though hospitality-driven and local models hold up better, and non-alcoholic beer is a real bright spot."
+    },
+    "rtd": {
+      "direction": "growing",
+      "posture": "A permanent, growing part of the market that churns fast inside. Spirits-based and wine-based cans are rising while hard seltzer fades, and single-serve, same-day buying drives it."
+    },
+    "non-alc": {
+      "direction": "growing",
+      "posture": "Fast-growing and now mainstream, working as an addition to drinking rather than a replacement. Most buyers also buy alcohol and switch by occasion."
+    },
+    "thc": {
+      "direction": "growing-volatile",
+      "posture": "Demand is rising fast while the legal ground stays unstable. Treat the momentum as real interest, with regulation as the wild card that can change the picture quickly."
+    },
+    "liqueur": {
+      "direction": "softening",
+      "posture": "Broadly soft as a group, but it is cocktail architecture as much as a standalone pour, so flavor families move differently. Value comes when a product clearly serves a specific drink or occasion."
+    },
+    "amaro": {
+      "direction": "niche",
+      "posture": "A small, culturally influential niche with no clean public sales read, so it is judged by menu placements, reorders, and staff-led trial rather than category size. It punches above its shelf footprint in cocktail-forward programs."
+    },
+    "brandy": {
+      "direction": "declining",
+      "posture": "A pressured family, including Cognac and Armagnac, with declines reaching even the higher tiers. It stays relevant in cocktails, gifting, and after-dinner occasions, and is exposed to imported-prestige trade pressure."
+    },
+    "coffee-tea": {
+      "direction": "mixed",
+      "posture": "Daily rituals that endure while formats fragment. Tea is soft by volume and coffee is more resilient, with cold brew and ready-to-drink formats growing as additions rather than replacing the morning cup."
+    },
+    "energy": {
+      "direction": "growing",
+      "posture": "A functional mainstream category that keeps growing and recruiting new occasions, expanding from performance into everyday focus, with zero-sugar and flavor-driven options leading."
+    }
+  }
+}

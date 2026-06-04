@@ -26,14 +26,17 @@
 //   Two separate cron runs write these, in order.
 //
 //   Ranking run (runs first, reasoning model):
-//     aiRank        - the defensible weekly rank, replaces the old
-//                     placeholder composite as the sort driver
-//     aiRationale   - the ranking agent's short reason for the rank.
-//                     Fed to the analysis agent as an extra input.
-//                     Stored for the member-only tier later. Not
-//                     shown on the free card.
-//     aiRankDate    - when the ranking run wrote the rank
-//     aiRuleVersion - which version of the ranking rule produced it
+//     aiRank         - the defensible weekly rank, replaces the old
+//                      placeholder composite as the sort driver
+//     previousAiRank - last run's aiRank, snapshotted before the new
+//                      rank overwrites it, so the card can show
+//                      movement (up, down, same, or NEW)
+//     aiRationale    - the ranking agent's short reason for the rank.
+//                      Fed to the analysis agent as an extra input.
+//                      Stored for the member-only tier later. Not
+//                      shown on the free card.
+//     aiRankDate     - when the ranking run wrote the rank
+//     aiRuleVersion  - which version of the ranking rule produced it
 //
 //   Analysis run (runs second, GPT-4o, temperature zero):
 //     aiHeadline    - the hook sentence for the card
@@ -55,6 +58,8 @@
 //   2026-05-21: Added the AI intelligence layer fields. The legacy
 //               composite is condemned and will stop driving the
 //               sort once the ranking service writes aiRank.
+//   2026-06-03: Added previousAiRank so the ranking run can record
+//               trend direction. Additive only.
 //
 // LEGACY FIELDS:
 //   googleInterest, searchVelocity, googleHistory, lastGoogleUpdate,
@@ -189,6 +194,10 @@ const brandTrendSchema = new mongoose.Schema({
   // --- AI intelligence layer fields (active) ---
   // Written by the ranking run (first):
   aiRank: {
+    type: Number,
+    default: null,
+  },
+  previousAiRank: {
     type: Number,
     default: null,
   },

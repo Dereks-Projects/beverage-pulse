@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "title": "BeveragePulse Anchor - Top 100 Overall",
+    "asOf": "2026-06",
+    "source": "Composite Brand-Power Ranking across 15 categories (Anchor Document, June 2026)",
+    "note": "Curated establishment baseline for the overall board. Refresh monthly. Rank is the anchor baseline."
+  },
+  "brands": [
+    "Red Bull","Corona","Johnnie Walker","Jack Daniel's","Heineken","Smirnoff","Hennessy","Guinness","Bacardí","Don Julio",
+    "Budweiser","Monster Energy","Moët & Chandon","Jose Cuervo","Tito's Handmade Vodka","Absolut","Campari","Modelo Especial","Aperol","Jim Beam",
+    "Patrón","Michelob Ultra","Tanqueray","The Macallan","Grey Goose","Baileys","Casamigos","Captain Morgan","Chivas Regal","Veuve Clicquot",
+    "Bombay Sapphire","Maker's Mark","Ballantine's","Jägermeister","Stella Artois","1800 Tequila","Athletic Brewing","Glenfiddich","Ketel One","Penfolds",
+    "Gordon's","Buffalo Trace","Asahi Super Dry","Rémy Martin","Havana Club","Woodford Reserve","Celsius","Alani Nu","Barefoot","Hendrick's",
+    "Catena Zapata","Cointreau","Heineken 0.0","The Glenlivet","Belvedere","Yamazaki","Kahlúa","Dom Pérignon","Bulleit Bourbon","Clase Azul",
+    "Dewar's","Tsingtao","Blanton's","Martell","Yellow Tail","Bud Light","Guinness 0.0","Beefeater","Disaronno","Espolòn",
+    "Appleton Estate","Whispering Angel","Tequila Ocho","Chartreuse","Fortaleza","Wild Turkey","Pacifico","Antinori","New Amsterdam","Seedlip",
+    "St-Germain","Carlsberg","Michter's","Ghost Energy","Corona Cero","Nikka","Domaine de la Romanée-Conti","Zacapa","Fernet-Branca","Monkey Shoulder",
+    "Rockstar Energy","Josh Cellars","Courvoisier","Old Forester","Uncle Nearest","LALO","Cann","La Marca","Peroni Nastro Azzurro","Ghia"
+  ]
+}

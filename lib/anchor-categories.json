@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "title": "BeveragePulse Anchor - Top 15 per Category",
+    "asOf": "2026-06",
+    "source": "Composite Global Brand-Signal Ranking (Anchor Document, June 2026)",
+    "note": "Curated establishment baseline. Refresh monthly. Brand order is the anchor rank used as the ranker's baseline."
+  },
+  "categories": {
+    "vodka": { "label": "Vodka", "brands": ["Smirnoff","Tito's Handmade Vodka","Absolut","Grey Goose","Ketel One","Belvedere","New Amsterdam","Nemiroff","Stoli","Żubrówka","Beluga","Svedka","Haku","Cîroc","Altamura"] },
+    "gin": { "label": "Gin", "brands": ["Tanqueray","Bombay Sapphire","Gordon's","Hendrick's","Beefeater","Roku","Ginebra San Miguel","Fords Gin","Monkey 47","The Botanist","Sipsmith","Citadelle","Gin Mare","Boatyard","Aviation Gin"] },
+    "rum": { "label": "Rum", "brands": ["Bacardí","Captain Morgan","Havana Club","Tanduay","Appleton Estate","Planteray","Malibu","Diplomático","Zacapa","Mount Gay","Flor de Caña","Wray & Nephew","Brugal","Goslings","Old Monk"] },
+    "tequila": { "label": "Tequila", "brands": ["Don Julio","Jose Cuervo","Patrón","Casamigos","1800 Tequila","Espolòn","Clase Azul","Fortaleza","Tequila Ocho","Olmeca Altos","Teremana","Herradura","Cazadores","LALO","El Tesoro"] },
+    "scotch": { "label": "Scotch Whisky", "brands": ["Johnnie Walker","The Macallan","Chivas Regal","Ballantine's","Glenfiddich","The Glenlivet","Dewar's","Buchanan's","Grant's","Monkey Shoulder","Lagavulin","Ardbeg","Laphroaig","The Balvenie","The Dalmore"] },
+    "brandy-cognac": { "label": "Brandy & Cognac", "brands": ["Hennessy","Rémy Martin","Martell","Courvoisier","Emperador","Old Admiral","Torres Brandy","E&J","St-Rémy","D'Ussé","Mansion House","Ararat","Carlos I","Fundador","Cardenal Mendoza"] },
+    "bourbon": { "label": "Bourbon", "brands": ["Jim Beam","Maker's Mark","Buffalo Trace","Woodford Reserve","Wild Turkey","Bulleit Bourbon","Blanton's","Elijah Craig","Four Roses","Knob Creek","Old Forester","Evan Williams","Weller","Russell's Reserve","Angel's Envy"] },
+    "american-whiskey": { "label": "American Whiskey (Other Than Bourbon)", "brands": ["Jack Daniel's","Michter's","WhistlePig","High West","George Dickel","Uncle Nearest","Sazerac Rye","Old Overholt","Sagamore Spirit","Redwood Empire","Stranahan's","Westland","Balcones","Westward","Templeton Rye"] },
+    "japanese-whisky": { "label": "Japanese Whisky", "brands": ["Yamazaki","Hibiki","Nikka","Suntory Kakubin","Hakushu","Toki","Yoichi","Taketsuru","Ichiro's Malt / Chichibu","Mars Komagatake","Miyagikyo","Fuji","Kanosuke","Akashi","Kurayoshi"] },
+    "liqueur": { "label": "Liqueur, Amaro & Bitter Aperitivo", "brands": ["Campari","Aperol","Baileys","Jägermeister","Cointreau","Kahlúa","St-Germain","Chartreuse","Disaronno","Fernet-Branca","Grand Marnier","Amaro Montenegro","Licor 43","Cynar","Luxardo Maraschino"] },
+    "wine": { "label": "Wine", "brands": ["Moët & Chandon","Penfolds","Catena Zapata","Veuve Clicquot","Barefoot","Antinori","Josh Cellars","Dom Pérignon","Yellow Tail","Whispering Angel","Louis Roederer","Familia Torres","La Marca","Domaine de la Romanée-Conti","Kim Crawford"] },
+    "beer": { "label": "Beer", "brands": ["Corona","Guinness","Heineken","Modelo Especial","Michelob Ultra","Budweiser","Tsingtao","Stella Artois","Asahi Super Dry","Bud Light","Pacifico","Peroni Nastro Azzurro","Carlsberg","Pilsner Urquell","Brahma"] },
+    "non-alc": { "label": "Non-Alcoholic Adult Beverages", "brands": ["Athletic Brewing","Heineken 0.0","Guinness 0.0","Seedlip","Corona Cero","Lyre's","Ritual Zero Proof","Leitz","French Bloom","Ghia","Best Day Brewing","Noughty","Lucky Saint","Curious Elixirs","Oddbird"] },
+    "energy": { "label": "Energy Drinks", "brands": ["Red Bull","Monster Energy","Alani Nu","Celsius","Ghost Energy","Rockstar Energy","C4 Energy","Prime Energy","NOS","Reign","5-hour Energy","Bang Energy","Sting Energy","Lucozade Energy","Zoa Energy"] },
+    "thc": { "label": "THC Drinks", "brands": ["Cann","Cycling Frog","Wynk","Nowadays","Crescent 9","Keef","Brez","Ayrloom","Pamos","Houseplant","oHHo","Señorita","Cantrip","Rebel Rabbit","Delta Crush"] }
+  }
+}

@@ -1,3 +1,4 @@
+// app/page.js
 export const dynamic = 'force-dynamic';
 
 import connectToDatabase from '../lib/db';
@@ -10,11 +11,13 @@ import styles from './page.module.css';
 async function getBrandTrends() {
   await connectToDatabase();
 
-  // Fetch the AI-ranked brands, best rank first. Brands without an AI rank
-  // are not on the board yet; they appear once the ranking reaches them.
+  // Fetch every brand on the board, best rank first. The board and the
+  // category pills both read from this one set, so it must be the full
+  // roster, not a top slice. A cap here starves the pills, since a brand
+  // ranked below the cap can never appear in its category pill. Brands
+  // without an AI rank are not on the board yet.
   const trends = await BrandTrend.find({ aiRank: { $ne: null } })
     .sort({ aiRank: 1 })
-    .limit(20)
     .lean();
 
   return JSON.parse(JSON.stringify(trends));

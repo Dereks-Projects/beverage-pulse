@@ -131,6 +131,14 @@ const brandTrendSchema = new mongoose.Schema({
     type: Number,
     default: null,
   },
+  // Saturation flag (2026-06-11): true when both News windows sat at the feed
+  // cap, so the stored velocity is a flat 0 we cannot refine rather than the
+  // ceiling artifact. The UI and analysis can read this later; no display
+  // logic lives here.
+  newsSaturated: {
+    type: Boolean,
+    default: false,
+  },
   lastNewsUpdate: {
     type: Date,
     default: null,

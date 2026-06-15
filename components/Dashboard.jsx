@@ -2,22 +2,25 @@
 // ==========================================================================
 // Trending Brands dashboard. Single list, always ordered by the AI rank.
 //
-// There is no user-facing sort control. The rank is the product's point of
-// view, so the board's order is fixed to aiRank, lowest number first. The
-// View toggle and the category filter narrow the list; they never reorder it.
+// The home board shows the alcoholic Top 100, the product's flagship. The
+// category pills narrow to one category and draw from the full roster, so
+// brands ranked below 100 (energy, non-alc, THC) still appear in their own
+// pill even though they are not on the main board. Selecting a pill is the
+// only thing that lifts the Top 100 cap. The rank is the point of view, so
+// nothing here reorders the board.
 // ==========================================================================
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import TrendCard from './TrendCard';
 import FilterBar from './FilterBar';
-import ViewToggle from './ViewToggle';
-import {
-  CATEGORIES,
-  BRAND_TAXONOMY,
-} from '../lib/taxonomy';
+import { BRAND_TAXONOMY } from '../lib/taxonomy';
 import styles from './Dashboard.module.css';
+
+// The home board is the alcoholic Top 100. A selected pill is exempt: it
+// shows that category's full set, including brands ranked below 100.
+const HOME_BOARD_SIZE = 100;
 
 /**
  * Get the category id for a brand.
@@ -28,35 +31,11 @@ function getCategoryId(name) {
 }
 
 /**
- * Get the parent group ('alcoholic' or 'non-alcoholic') for a brand.
+ * Narrow to a single category, or pass everything through when 'all'.
  */
-function getParentGroup(name) {
-  const categoryId = getCategoryId(name);
-  if (!categoryId) return null;
-
-  const category = CATEGORIES[categoryId];
-  return category ? category.parent : null;
-}
-
-/**
- * Apply view and category filters.
- */
-function filterTrends(trends, view, category) {
-  let filtered = trends;
-
-  if (view !== 'all') {
-    filtered = filtered.filter(
-      (trend) => getParentGroup(trend.name) === view
-    );
-  }
-
-  if (category !== 'all') {
-    filtered = filtered.filter(
-      (trend) => getCategoryId(trend.name) === category
-    );
-  }
-
-  return filtered;
+function filterByCategory(trends, category) {
+  if (category === 'all') return trends;
+  return trends.filter((trend) => getCategoryId(trend.name) === category);
 }
 
 /**
@@ -72,43 +51,29 @@ function sortByRank(trends) {
 }
 
 export default function Dashboard({ brandTrends }) {
-  const [activeView, setActiveView] = useState('all');
   const [activeFilter, setActiveFilter] = useState('all');
 
-  function handleViewChange(newView) {
-    setActiveView(newView);
-    setActiveFilter('all');
-  }
-
-  const visibleCategories = useMemo(() => {
-    if (activeView === 'all') return null;
-
-    return Object.values(CATEGORIES)
-      .filter((cat) => cat.parent === activeView)
-      .map((cat) => cat.id);
-  }, [activeView]);
-
-  const filteredBrands = sortByRank(
-    filterTrends(brandTrends, activeView, activeFilter)
-  );
+  // No pill selected: the home board, capped to the alcoholic Top 100.
+  // A pill selected: that category's full set from the whole roster, so
+  // brands below rank 100 still surface in their own pill.
+  const inCategory = filterByCategory(brandTrends, activeFilter);
+  const scoped =
+    activeFilter === 'all'
+      ? inCategory.filter(
+          (trend) => typeof trend.aiRank === 'number' && trend.aiRank <= HOME_BOARD_SIZE
+        )
+      : inCategory;
+  const filteredBrands = sortByRank(scoped);
 
   return (
     <div className={styles.dashboard}>
-      {/* Top controls: view toggle only */}
-      <div className={styles.controlsRow}>
-        <ViewToggle
-          activeView={activeView}
-          onViewChange={handleViewChange}
-        />
-      </div>
-
       {/* Category filter pills */}
       <div className={styles.filterSection}>
         <p className={styles.filterLabel}>Filter by category</p>
         <FilterBar
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
-          visibleCategories={visibleCategories}
+          visibleCategories={null}
         />
       </div>
 
@@ -122,16 +87,10 @@ export default function Dashboard({ brandTrends }) {
         </div>
         <div className={styles.cardList} role="list">
           {filteredBrands.map((trend) => (
-            <TrendCard
-              key={trend._id}
-              trend={trend}
-              type="brand"
-            />
+            <TrendCard key={trend._id} trend={trend} type="brand" />
           ))}
           {filteredBrands.length === 0 && (
-            <p className={styles.empty}>
-              No brands in this category.
-            </p>
+            <p className={styles.empty}>No brands in this category.</p>
           )}
         </div>
       </section>
